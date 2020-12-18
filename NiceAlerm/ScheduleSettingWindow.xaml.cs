@@ -1,4 +1,5 @@
-﻿using NiceAlerm.Models;
+﻿using Microsoft.Win32;
+using NiceAlerm.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,10 @@ namespace NiceAlerm
         /// 確定フラグ
         /// </summary>
         public bool Committed { get; set; }
-
+        /// <summary>
+        /// 変更フラグ
+        /// </summary>
+        private bool IsChanged { get; set; }
         /// <summary>
         /// Constructor
         /// </summary>
@@ -37,6 +41,7 @@ namespace NiceAlerm
             try
             {
                 InitializeComponent();
+                Title = "NiceAlerm - スケジュール設定 ver " + AppUtil.GetVersion();
             }
             catch (Exception ex)
             {
@@ -52,14 +57,25 @@ namespace NiceAlerm
             try
             {
                 EditData = alm.DeepCopy();
-                AlermNameTextBox.Text = EditData.Name;
-                AlermMessageTextBox.Text = EditData.Message;
-                EdgeColorColorPicker.SelectedColor = Color.FromArgb(EditData.EdgeColor[0], EditData.EdgeColor[1], EditData.EdgeColor[2], EditData.EdgeColor[3]);
-                LabelColorColorPicker.SelectedColor = Color.FromArgb(EditData.LabelColor[0], EditData.LabelColor[1], EditData.LabelColor[2], EditData.LabelColor[3]);
-                ForeColorColorPicker.SelectedColor = Color.FromArgb(EditData.ForeColor[0], EditData.ForeColor[1], EditData.ForeColor[2], EditData.ForeColor[3]);
+                EnableCheck.IsChecked = EditData.Enable;
+                TorokuNameTextBox.Text = EditData.Name;
+
+                switch (EditData.ExecTypeIndex)
+                {
+                    case 0:
+                        AlermRadio.IsChecked = true;
+                        AlermMessageTextBox.Text = EditData.Message;
+                        EdgeColorColorPicker.SelectedColor = Color.FromArgb(EditData.EdgeColor[0], EditData.EdgeColor[1], EditData.EdgeColor[2], EditData.EdgeColor[3]);
+                        LabelColorColorPicker.SelectedColor = Color.FromArgb(EditData.LabelColor[0], EditData.LabelColor[1], EditData.LabelColor[2], EditData.LabelColor[3]);
+                        ForeColorColorPicker.SelectedColor = Color.FromArgb(EditData.ForeColor[0], EditData.ForeColor[1], EditData.ForeColor[2], EditData.ForeColor[3]);
+                        break;
+                    case 1:
+                        ExecRadio.IsChecked = true;
+                        ExecPathTextBox.Text = EditData.Message;
+                        break;
+                }
 
                 SetScheduleGrid();
-
                 SetButtonEnabled();
             }
             catch (Exception ex)
@@ -67,14 +83,14 @@ namespace NiceAlerm
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// スケジュールグリッドを作成する
+        /// </summary>
         private void SetScheduleGrid()
         {
             try
             {
                 InitScheduleControl();
-
-
                 ScheduleGrid.Items.Clear();
                 foreach (Schedule s in EditData.ScheduleList)
                 {
@@ -145,6 +161,7 @@ namespace NiceAlerm
                 Schedule schedule = GetScheduleFromControl();
                 if (schedule == null) return;
 
+                IsChanged = true;
                 ScheduleGrid.Items.Add(schedule);
                 EditData.ScheduleList.Add(schedule);
                 SetButtonEnabled();
@@ -163,6 +180,7 @@ namespace NiceAlerm
             try
             {
                 Schedule schedule = new Schedule();
+
                 string startTime = TimeTextBox.Text;
 
                 if (!DateTime.TryParse("2020/01/01 " + startTime + ":00", out DateTime result))
@@ -171,6 +189,9 @@ namespace NiceAlerm
                     return null;
                 }
                 schedule.StartTime = startTime;
+
+
+
                 if ((bool)OnetimeRadio.IsChecked)
                 {
                     string value = OnetimeDateTextBox.Text;
@@ -215,7 +236,7 @@ namespace NiceAlerm
                 }
                 if ((bool)DailyRadio.IsChecked)
                 {
-                    schedule.ScheduleType = MonthlyRadio.Content.ToString();
+                    schedule.ScheduleType = DailyRadio.Content.ToString();
                     schedule.ScheduleTypeIndex = 3;
                 }
                 return schedule;
@@ -238,6 +259,7 @@ namespace NiceAlerm
                 Schedule schedule = GetScheduleFromControl();
                 if (schedule == null) return;
 
+                IsChanged = true;
                 Schedule original = (Schedule)ScheduleGrid.SelectedItem;
                 original.Clone(schedule);
                 SetScheduleGrid();
@@ -257,7 +279,8 @@ namespace NiceAlerm
             if (ScheduleGrid.SelectedIndex < 0) return;
             MessageBoxResult result = MessageBox.Show("スケジュールを削除してもよいですか？", "削除確認", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.No) return;
-            
+
+            IsChanged = true;
             Schedule remove = (Schedule)ScheduleGrid.Items[ScheduleGrid.SelectedIndex];
             ScheduleGrid.Items.Remove(remove);
             EditData.ScheduleList.Remove(remove);
@@ -277,33 +300,57 @@ namespace NiceAlerm
                     MessageBox.Show("少なくとも1件のスケジュールの登録が必要です。", "スケジュール登録エラー", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                string name = AlermNameTextBox.Text.Trim();
+                string name = TorokuNameTextBox.Text.Trim();
                 string message = AlermMessageTextBox.Text.Trim();
+                string execPath = ExecPathTextBox.Text.Trim();
                 if (string.IsNullOrEmpty(name))
                 {
-                    MessageBox.Show("アラーム名は入力必須項目です。", "アラーム名入力エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("登録名は入力必須項目です。", "登録名入力エラー", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                if (string.IsNullOrEmpty(message))
+
+                if ((bool)AlermRadio.IsChecked)
                 {
-                    MessageBox.Show("メッセージは入力必須項目です。", "メッセージ入力エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                EditData.Name = name;
-                EditData.Message = message;
-                EditData.EdgeColor = new byte[]{ EdgeColorColorPicker.SelectedColor.Value.A
+                    if (string.IsNullOrEmpty(message))
+                    {
+                        MessageBox.Show("メッセージは入力必須項目です。", "メッセージ入力エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    EditData.ExecType = "アラーム";
+                    EditData.ExecTypeIndex = 0;
+                    EditData.Message = message;
+                    EditData.EdgeColor = new byte[]{ EdgeColorColorPicker.SelectedColor.Value.A
                     ,EdgeColorColorPicker.SelectedColor.Value.R
                     ,EdgeColorColorPicker.SelectedColor.Value.G
                     ,EdgeColorColorPicker.SelectedColor.Value.B };
-                EditData.LabelColor = new byte[]{ LabelColorColorPicker.SelectedColor.Value.A
+                    EditData.LabelColor = new byte[]{ LabelColorColorPicker.SelectedColor.Value.A
                         ,LabelColorColorPicker.SelectedColor.Value.R
                         ,LabelColorColorPicker.SelectedColor.Value.G
                         ,LabelColorColorPicker.SelectedColor.Value.B};
-                EditData.ForeColor = new byte[] { ForeColorColorPicker.SelectedColor.Value.A
+                    EditData.ForeColor = new byte[] { ForeColorColorPicker.SelectedColor.Value.A
                 ,ForeColorColorPicker.SelectedColor.Value.R
                 ,ForeColorColorPicker.SelectedColor.Value.G
                 ,ForeColorColorPicker.SelectedColor.Value.B};
+                }
+
+                if ((bool)ExecRadio.IsChecked)
+                {
+                    if (!System.IO.File.Exists(execPath))
+                    {
+                        MessageBox.Show("正しい実行パスを入力してください。", "実行パス入力エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    EditData.ExecType = "外部アプリ実行";
+                    EditData.ExecTypeIndex = 1;
+                    EditData.Message = execPath;
+                }
+
+                EditData.Enable = (bool)EnableCheck.IsChecked;
+                EditData.Name = name;
+
+
                 Committed = true;
+                IsChanged = false;
                 this.Close();
             }
             catch (Exception ex)
@@ -311,7 +358,11 @@ namespace NiceAlerm
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// 選択変更イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void ScheduleGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -334,19 +385,159 @@ namespace NiceAlerm
                         break;
                     case 2:
                         WeeklyRadio.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("日")) Week1CheckBox.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("月")) Week2CheckBox.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("火")) Week3CheckBox.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("水")) Week4CheckBox.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("木")) Week5CheckBox.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("金")) Week6CheckBox.IsChecked = true;
-                        if (schedule.ScheduleValue.Contains("土")) Week7CheckBox.IsChecked = true;
+                        Week1CheckBox.IsChecked = (schedule.ScheduleValue.Contains("日"));
+                        Week2CheckBox.IsChecked = (schedule.ScheduleValue.Contains("月"));
+                        Week3CheckBox.IsChecked = (schedule.ScheduleValue.Contains("火"));
+                        Week4CheckBox.IsChecked = (schedule.ScheduleValue.Contains("水"));
+                        Week5CheckBox.IsChecked = (schedule.ScheduleValue.Contains("木"));
+                        Week6CheckBox.IsChecked = (schedule.ScheduleValue.Contains("金"));
+                        Week7CheckBox.IsChecked = (schedule.ScheduleValue.Contains("土"));
                         break;
                     case 3:
                         DailyRadio.IsChecked = true;
                         break;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 実行ファイルを選択します。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExecChoiceButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.Filter = "All Files (*.*)|*.*";
+                bool? result = openFileDialog.ShowDialog();
+                if (result == true)
+                {
+                    ExecPathTextBox.Text = openFileDialog.FileName;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// アラームラジオのチェックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AlermRadio_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ExecPathTextBox.IsEnabled = false;
+                ExecChoiceButton.IsEnabled = false;
+
+                AlermMessageTitleLabel.Visibility = Visibility.Visible;
+                AlermMessageTextBox.Visibility = Visibility.Visible;
+                AlermFormBackColor.Visibility = Visibility.Visible;
+                EdgeColorColorPicker.Visibility = Visibility.Visible;
+                AlermFormLabelColor.Visibility = Visibility.Visible;
+                LabelColorColorPicker.Visibility = Visibility.Visible;
+                AlermFormForeColor.Visibility = Visibility.Visible;
+                ForeColorColorPicker.Visibility = Visibility.Visible;
+
+                ExecLabel.Visibility = Visibility.Hidden;
+                ExecPathTextBox.Visibility = Visibility.Hidden;
+                ExecChoiceButton.Visibility = Visibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 処理実行ラジオのチェックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExecRadio_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ExecPathTextBox.IsEnabled = true;
+                ExecChoiceButton.IsEnabled = true;
+
+                AlermMessageTitleLabel.Visibility = Visibility.Hidden;
+                AlermMessageTextBox.Visibility = Visibility.Hidden;
+                AlermFormBackColor.Visibility = Visibility.Hidden;
+                EdgeColorColorPicker.Visibility = Visibility.Hidden;
+                AlermFormLabelColor.Visibility = Visibility.Hidden;
+                LabelColorColorPicker.Visibility = Visibility.Hidden;
+                AlermFormForeColor.Visibility = Visibility.Hidden;
+                ForeColorColorPicker.Visibility = Visibility.Hidden;
+
+                ExecLabel.Visibility = Visibility.Visible;
+                ExecPathTextBox.Visibility = Visibility.Visible;
+                ExecChoiceButton.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// アラームの有効化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EnableCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EnableCheck.Content = "有効";
+                EnableCheck.Foreground = new SolidColorBrush(Colors.Blue);
+            }
+            catch (Exception ex)
+            {
+                throw ex; 
+            }
+        }
+        /// <summary>
+        /// アラームの無効化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EnableCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EnableCheck.Content = "無効";
+                EnableCheck.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 終了時イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                if (IsChanged)
+                {
+                    MessageBoxResult result = MessageBox.Show("データは編集中ですが、登録せずに終了しますか？", "終了確認", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes);
+                    if(result == MessageBoxResult.No)
+                    {
+                        e.Cancel = true;
+                    }
+                }
             }
             catch (Exception ex)
             {

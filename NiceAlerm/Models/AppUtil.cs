@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,17 @@ namespace NiceAlerm.Models
 
                 return (T)formatter.Deserialize(stream);
             }
+        }
+        /// <summary>
+        /// バージョンを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static string GetVersion()
+        {
+            System.Reflection.Assembly assembly = Assembly.GetExecutingAssembly();
+            System.Reflection.AssemblyName asmName = assembly.GetName();
+            System.Version version = asmName.Version;
+            return version.ToString();
         }
     }
 }

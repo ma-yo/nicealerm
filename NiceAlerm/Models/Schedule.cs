@@ -20,6 +20,7 @@ namespace NiceAlerm.Models
         /// スケジュールタイプ
         /// </summary>
         public string ScheduleType { get; set; } = "1回のみ";
+
         /// <summary>
         /// スケジュール値
         /// </summary>
@@ -32,13 +33,13 @@ namespace NiceAlerm.Models
         /// <summary>
         /// オブジェクトのコピーを行う
         /// </summary>
-        /// <param name="schedule1"></param>
-        internal void Clone(Schedule schedule1)
+        /// <param name="schedule"></param>
+        internal void Clone(Schedule schedule)
         {
-            ScheduleTypeIndex = schedule1.ScheduleTypeIndex;
-            ScheduleType = schedule1.ScheduleType;
-            ScheduleValue = schedule1.ScheduleValue;
-            StartTime = schedule1.StartTime;
+            ScheduleTypeIndex = schedule.ScheduleTypeIndex;
+            ScheduleType = schedule.ScheduleType;
+            ScheduleValue = schedule.ScheduleValue;
+            StartTime = schedule.StartTime;
         }
     }
 }

@@ -22,13 +22,17 @@ namespace NiceAlerm.Models
         /// </summary>
         public string Message { get; set; } = "";
         /// <summary>
+        /// アプリケーション実行パス
+        /// </summary>
+        public string ExecPath { get; set; } = "";
+        /// <summary>
         /// 最終通知時刻
         /// </summary>
         public DateTime LastAlerm { get; set; } = DateTime.Now;
         /// <summary>
         /// 枠色
         /// </summary>
-        public byte[] EdgeColor { get; set; } = new byte[] { Colors.Black.A, Colors.Black.R, Colors.Black.G, Colors.Black.B };
+        public byte[] EdgeColor { get; set; } = new byte[] { Colors.Yellow.A, Colors.Yellow.R, Colors.Yellow.G, Colors.Yellow.B };
         /// <summary>
         /// ラベル背景色
         /// </summary>
@@ -37,10 +41,30 @@ namespace NiceAlerm.Models
         /// 文字色
         /// </summary>
         public byte[] ForeColor { get; set; } = new byte[] { Colors.Tomato.A, Colors.Tomato.R, Colors.Tomato.G, Colors.Tomato.B };
+
+        /// <summary>
+        /// 処理タイプ番号
+        /// </summary>
+        public int ExecTypeIndex { get; set; } = 0;
+        /// <summary>
+        /// 処理タイプ
+        /// </summary>
+        public string ExecType { get; set; } = "アラーム";
         /// <summary>
         /// スケジュール一覧
         /// </summary>
         public List<Schedule> ScheduleList { get; set; } = new List<Schedule>();
+
+        private bool _enable = true;
+        /// <summary>
+        /// 有効無効
+        /// </summary>
+        public bool Enable { 
+            get { return _enable; } 
+            set { _enable = value; if (value) { EnableMsg = "有効"; } else { EnableMsg = "無効"; } }
+        }
+
+        public string EnableMsg { get; set; }
         /// <summary>
         /// オブジェクトをコピーする
         /// </summary>
@@ -55,6 +79,11 @@ namespace NiceAlerm.Models
                 LabelColor = editData.LabelColor;
                 EdgeColor = editData.EdgeColor;
                 ForeColor = editData.ForeColor;
+                Enable = editData.Enable;
+                ExecPath = editData.ExecPath;
+                ExecType = editData.ExecType;
+                ExecTypeIndex = editData.ExecTypeIndex;
+
                 ScheduleList.Clear();
                 foreach (var s in editData.ScheduleList)
                 {

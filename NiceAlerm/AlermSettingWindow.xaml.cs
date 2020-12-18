@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +33,7 @@ namespace NiceAlerm
             try
             {
                 InitializeComponent();
+                Title = "NiceAlerm - アラーム設定 ver " + AppUtil.GetVersion();
             }
             catch (Exception ex)
             {
@@ -47,15 +49,9 @@ namespace NiceAlerm
             try
             {
                 alermList = alerms;
-                AlermGrid.Items.Clear();
-                foreach (var alerm in alermList)
-                {
-                    AlermGrid.Items.Add(alerm);
-                }
-                if(AlermGrid.Items.Count > 0)
-                {
-                    AlermGrid.SelectedIndex = 0;
-                }
+
+                SetAlermGrid();
+
                 SetButtonEnabled();
             }
             catch (Exception ex)
@@ -63,6 +59,29 @@ namespace NiceAlerm
                 throw ex;
             }
         }
+        /// <summary>
+        /// アラームグリッドを作成する
+        /// </summary>
+        private void SetAlermGrid()
+        {
+            try
+            {
+                AlermGrid.Items.Clear();
+                foreach (var alerm in alermList)
+                {
+                    AlermGrid.Items.Add(alerm);
+                }
+                if (AlermGrid.Items.Count > 0)
+                {
+                    AlermGrid.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// ボタンのEnabledを設定する
         /// </summary>
@@ -114,6 +133,20 @@ namespace NiceAlerm
         {
             try
             {
+                ExecuteEdit();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 修正を実行する
+        /// </summary>
+        private void ExecuteEdit()
+        {
+            try
+            {
                 if (AlermGrid.SelectedIndex < 0) return;
                 Alerm edit = (Alerm)AlermGrid.SelectedItem;
                 ScheduleSettingWindow form = new ScheduleSettingWindow();
@@ -122,14 +155,15 @@ namespace NiceAlerm
                 if (form.Committed)
                 {
                     edit.Clone(form.EditData);
+                    SetAlermGrid();
                 }
-
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         /// <summary>
         /// 削除ボタンのクリックイベント
         /// </summary>
@@ -147,6 +181,22 @@ namespace NiceAlerm
                 AlermGrid.Items.Remove(remove);
                 alermList.Remove(remove);
                 SetButtonEnabled();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// マウスダブルクリックで修正を起動する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AlermGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                ExecuteEdit();
             }
             catch (Exception ex)
             {

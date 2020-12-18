@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Icon="Images/clock.ico"
         FontFamily="MeryoUI"
-        Background="#FFF7F7F7"
+        Background="WhiteSmoke"
         FontSize="12"
-        Title="アラームリスト" Height="400" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="アラームリスト" Height="400" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="2,2,2,2">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
@@ -27,10 +27,16 @@
         </Grid.ColumnDefinitions>
 
         <Button Grid.Row="0" Grid.Column="0" x:Name="AddButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="新規作成" Margin="0,2,2,2" Click="AddButton_Click"/>
-        <Button Grid.Row="0" Grid.Column="1" x:Name="EditButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="修正" Margin="0,2,2,2" Click="EditButton_Click"/>
-        <Button Grid.Row="0" Grid.Column="2" x:Name="RemoveButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="削除" Margin="0,2,2,2" Click="RemoveButton_Click"/>
+        <Button Grid.Row="0" Grid.Column="1" x:Name="EditButton" Background="LimeGreen" Foreground="White" FontWeight="Bold" FontSize="14" Content="修正" Margin="0,2,2,2" Click="EditButton_Click"/>
+        <Button Grid.Row="0" Grid.Column="2" x:Name="RemoveButton" Background="Firebrick" Foreground="White" FontWeight="Bold" FontSize="14" Content="削除" Margin="0,2,2,2" Click="RemoveButton_Click"/>
 
-        <DataGrid x:Name="AlermGrid" SelectionMode="Single" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" FontSize="14" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,2,2,2">
+        <DataGrid x:Name="AlermGrid" SelectionMode="Single" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" FontSize="14" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,2,2,2" MouseDoubleClick="AlermGrid_MouseDoubleClick">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DeepSkyBlue"  />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="DeepSkyBlue" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"  />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White" />
+            </DataGrid.Resources>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <!-- セルフォーカス時の枠線を消す -->
@@ -50,15 +56,23 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="アラーム名"
+                <DataGridTextColumn Header="登録名"
                                     Binding="{Binding Name}"
-                                    Width="200"
+                                    Width="120"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Header="アラームメッセージ"
+                <DataGridTextColumn Header="処理タイプ"
+                                    Binding="{Binding ExecType}"
+                                    Width="100"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Header="処理内容"
                                     Binding="{Binding Message}"
                                     Width="*"
                                     IsReadOnly="True" />
-                
+                <DataGridTextColumn Header="状態"
+                                    Binding="{Binding EnableMsg}"
+                                    Width="80"
+                                    IsReadOnly="True" />
+
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

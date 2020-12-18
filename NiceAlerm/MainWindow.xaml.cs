@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using log4net;
+using Newtonsoft.Json;
 using NiceAlerm.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,6 +28,11 @@ namespace NiceAlerm
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// ロガー
+        /// </summary>
+        ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// アラーム情報
         /// </summary>
@@ -54,9 +61,14 @@ namespace NiceAlerm
             try
             {
                 InitializeComponent();
+
                 CreateAppDir();
                 LoadAlerm();
 
+                if (!Singleton.GetInstance().AppEnabled)
+                {
+                    this.Close();
+                }
                 TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock_stop;
                 AlermStopMenu.IsEnabled = false;
                 if (alermList.Count > 0)
@@ -66,6 +78,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 MessageBox.Show(ex.Message);
             }
         }
@@ -87,117 +101,150 @@ namespace NiceAlerm
                 TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock;
                 alermThread = new Thread(new ThreadStart(()=> {
 
-                    while (threadStart)
+                    try
                     {
-                        while (threadPause)
+                        while (threadStart)
                         {
-                            Thread.Sleep(100);
-                        }
-                        DateTime currentTime = DateTime.Now;
-                        List<Alerm> removeList = new List<Alerm>();
-                        foreach (var a in alermList)
-                        {
-                            bool alerm = false;
-                            foreach(var s in a.ScheduleList)
+                            while (threadPause)
                             {
-                                switch (s.ScheduleTypeIndex)
+                                Thread.Sleep(100);
+                            }
+                            DateTime currentTime = DateTime.Now;
+                            List<Alerm> removeList = new List<Alerm>();
+                            foreach (var a in alermList.Where(a => a.Enable))
+                            {
+                                bool alerm = false;
+                                foreach (var s in a.ScheduleList)
                                 {
-                                    case 0: //指定日
-                                        if (currentTime.ToString("yyyy/MM/dd") != s.ScheduleValue) continue;
-                                        break;
-                                    case 1: //毎月
-                                        if(currentTime.Day != int.Parse(s.ScheduleValue))
-                                        {
-                                            if(currentTime.AddDays(1).Day != 1 || s.ScheduleValue != "31"){
-                                                continue;
-                                            }
-                                        }
-                                        break;
-                                    case 2: //毎週
-                                        switch (currentTime.DayOfWeek)
-                                        {
-                                            case DayOfWeek.Monday:
-                                                if (!s.ScheduleValue.Contains("月")) continue;
-                                                break;
-                                            case DayOfWeek.Tuesday:
-                                                if (!s.ScheduleValue.Contains("火")) continue;
-                                                break;
-                                            case DayOfWeek.Wednesday:
-                                                if (!s.ScheduleValue.Contains("水")) continue;
-                                                break;
-                                            case DayOfWeek.Thursday:
-                                                if (!s.ScheduleValue.Contains("木")) continue;
-                                                break;
-                                            case DayOfWeek.Friday:
-                                                if (!s.ScheduleValue.Contains("金")) continue;
-                                                break;
-                                            case DayOfWeek.Saturday:
-                                                if (!s.ScheduleValue.Contains("土")) continue;
-                                                break;
-                                            case DayOfWeek.Sunday:
-                                                if (!s.ScheduleValue.Contains("日")) continue;
-                                                break;
-                                        }
-                                        break;
-                                    case 3: //毎日
-                                        break;
-                                }
-                                string startTime = currentTime.ToString("HH:mm");
-                                if (startTime == s.StartTime)
-                                {
-                                    if ((a.LastAlerm - currentTime).Minutes != 0)
+                                    switch (s.ScheduleTypeIndex)
                                     {
-                                        a.LastAlerm = currentTime;
-                                           alerm = true;
-                                        this.Dispatcher.Invoke((Action)(() =>
+                                        case 0: //指定日
+                                            if (currentTime.ToString("yyyy/MM/dd") != s.ScheduleValue) continue;
+                                            break;
+                                        case 1: //毎月
+                                            if (currentTime.Day != int.Parse(s.ScheduleValue))
+                                            {
+                                                if (currentTime.AddDays(1).Day != 1 || s.ScheduleValue != "31")
+                                                {
+                                                    continue;
+                                                }
+                                            }
+                                            break;
+                                        case 2: //毎週
+                                            switch (currentTime.DayOfWeek)
+                                            {
+                                                case DayOfWeek.Monday:
+                                                    if (!s.ScheduleValue.Contains("月")) continue;
+                                                    break;
+                                                case DayOfWeek.Tuesday:
+                                                    if (!s.ScheduleValue.Contains("火")) continue;
+                                                    break;
+                                                case DayOfWeek.Wednesday:
+                                                    if (!s.ScheduleValue.Contains("水")) continue;
+                                                    break;
+                                                case DayOfWeek.Thursday:
+                                                    if (!s.ScheduleValue.Contains("木")) continue;
+                                                    break;
+                                                case DayOfWeek.Friday:
+                                                    if (!s.ScheduleValue.Contains("金")) continue;
+                                                    break;
+                                                case DayOfWeek.Saturday:
+                                                    if (!s.ScheduleValue.Contains("土")) continue;
+                                                    break;
+                                                case DayOfWeek.Sunday:
+                                                    if (!s.ScheduleValue.Contains("日")) continue;
+                                                    break;
+                                            }
+                                            break;
+                                        case 3: //毎日
+                                            break;
+                                    }
+                                    string startTime = currentTime.ToString("HH:mm");
+                                    if (startTime == s.StartTime)
+                                    {
+                                        if ((a.LastAlerm - currentTime).Minutes != 0)
                                         {
-                                            AlermWindow form = new AlermWindow();
-                                            form.MainGrid.Background = new SolidColorBrush(Color.FromArgb(a.EdgeColor[0], a.EdgeColor[1], a.EdgeColor[2], a.EdgeColor[3]));
-                                            form.MainBorder.Background = new SolidColorBrush(Color.FromArgb(a.LabelColor[0], a.LabelColor[1], a.LabelColor[2], a.LabelColor[3]));
-                                            form.MessageText.Foreground = new SolidColorBrush(Color.FromArgb(a.ForeColor[0], a.ForeColor[1], a.ForeColor[2], a.ForeColor[3]));
-                                            form.MessageText.Text = a.Message;
-                                            form.ShowDialog();
-                                        }));
+                                            a.LastAlerm = currentTime;
+                                            alerm = true;
+                                            this.Dispatcher.Invoke((Action)(() =>
+                                            {
+                                                switch (a.ExecTypeIndex)
+                                                {
+                                                    case 0:
+                                                        logger.Info("アラーム実行 ⇒ " + a.Name);
+                                                        AlermWindow form = new AlermWindow();
+                                                        form.MainGrid.Background = new SolidColorBrush(Color.FromArgb(a.EdgeColor[0], a.EdgeColor[1], a.EdgeColor[2], a.EdgeColor[3]));
+                                                        form.MainBorder.Background = new SolidColorBrush(Color.FromArgb(a.LabelColor[0], a.LabelColor[1], a.LabelColor[2], a.LabelColor[3]));
+                                                        form.MessageText.Foreground = new SolidColorBrush(Color.FromArgb(a.ForeColor[0], a.ForeColor[1], a.ForeColor[2], a.ForeColor[3]));
+                                                        form.MessageText.Text = a.Message;
+                                                        form.Title = s.StartTime + " ⇒ " + a.Name;
+                                                        form.Show();
+                                                        break;
+                                                    case 1:
+                                                        try
+                                                        {
+                                                            logger.Info("外部アプリ実行 ⇒ " + a.Name);
+                                                            logger.Info("実行パス ⇒ " + a.ExecPath);
+                                                            Process.Start(a.ExecPath);
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            logger.Error(ex.Message);
+                                                            logger.Error(ex.StackTrace);
+                                                        }
+                                                        break;
+                                                }
+
+                                            }));
+                                        }
+                                    }
+                                    //既に時刻を過ぎていたら処理したことにする
+                                    if (int.Parse(startTime.Replace(":", "")) > int.Parse(s.StartTime.Replace(":", "")))
+                                    {
+                                        alerm = true;
                                     }
                                 }
-                                //既に時刻を過ぎていたら処理したことにする
-                                if(int.Parse(startTime.Replace(":","")) > int.Parse(s.StartTime.Replace(":", "")))
+                                if (alerm)
                                 {
-                                    alerm = true;
+                                    //スケジュールが日付指定の1件のみの場合は、アラームを削除する
+                                    if (a.ScheduleList.Count == 1 && a.ScheduleList[0].ScheduleTypeIndex == 0)
+                                    {
+                                        removeList.Add(a);
+                                    }
                                 }
                             }
-                            if (alerm)
+                            foreach (Alerm r in removeList)
                             {
-                                //スケジュールが日付指定の1件のみの場合は、アラームを削除する
-                                if(a.ScheduleList.Count == 1 && a.ScheduleList[0].ScheduleTypeIndex == 0)
-                                {
-                                    removeList.Add(a);
-                                }
+                                logger.Info("スケジュール削除 ⇒ " + r.Name);
+                                alermList.Remove(r);
                             }
-                        }
-                        foreach(Alerm r in removeList)
-                        {
-                            alermList.Remove(r);
-                        }
-                        if(alermList.Count == 0)
-                        {
-                            threadStart = false;
-                            this.Dispatcher.Invoke((Action)(() =>
+                            if (alermList.Count == 0)
                             {
-                                AlermStartMenu.IsEnabled = true;
-                                AlermStopMenu.IsEnabled = false;
-                                TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock_stop;
-                            }));
-                            break;
+                                threadStart = false;
+                                this.Dispatcher.Invoke((Action)(() =>
+                                {
+                                    AlermStartMenu.IsEnabled = true;
+                                    AlermStopMenu.IsEnabled = false;
+                                    TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock_stop;
+                                }));
+                                break;
+                            }
+                            Thread.Sleep(500);
                         }
-                        Thread.Sleep(1000);
                     }
-
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex.Message);
+                        logger.Error(ex.StackTrace);
+                        throw ex;
+                    }
                 }));
                 alermThread.Start();
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -209,13 +256,21 @@ namespace NiceAlerm
         {
             try
             {
-                if (!System.IO.Directory.Exists(GetAppDirPath()))
+                string appDirPath = GetAppDirPath();
+                if (!System.IO.Directory.Exists(appDirPath))
                 {
-                    System.IO.Directory.CreateDirectory(GetAppDirPath());
+                    System.IO.Directory.CreateDirectory(appDirPath);
+                }
+                //ログフォルダを作成する
+                if (!System.IO.Directory.Exists(appDirPath + @"\Logs"))
+                {
+                    System.IO.Directory.CreateDirectory(appDirPath + @"\Logs");
                 }
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -227,10 +282,12 @@ namespace NiceAlerm
         {
             try
             {
-                return System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\AppData\Local\NiceAlerm";
+                return System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\NiceAlerm";
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -261,6 +318,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -280,6 +339,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -299,6 +360,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -320,6 +383,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -339,6 +404,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex; 
             }
         }
@@ -355,6 +422,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
@@ -393,7 +462,7 @@ namespace NiceAlerm
                 {
                     if(alermList.Count > 0)
                     {
-                        MessageBoxResult result = MessageBox.Show("アラームを開始しますか？。", "アラーム開始確認", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
+                        MessageBoxResult result = MessageBox.Show("アラームを開始しますか？", "アラーム開始確認", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
                         if (result == MessageBoxResult.No) return;
                         StartAlermThread();
                     }
@@ -401,6 +470,8 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
                 throw ex;
             }
         }
