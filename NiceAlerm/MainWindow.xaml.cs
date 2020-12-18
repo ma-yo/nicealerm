@@ -65,10 +65,13 @@ namespace NiceAlerm
                 CreateAppDir();
                 LoadAlerm();
 
+                //重複起動チェック等でアプリが開始OKでない場合は終了する
                 if (!Singleton.GetInstance().AppEnabled)
                 {
                     this.Close();
+                    return;
                 }
+
                 TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock_stop;
                 AlermStopMenu.IsEnabled = false;
                 if (alermList.Count > 0)
@@ -99,6 +102,8 @@ namespace NiceAlerm
                 AlermStopMenu.IsEnabled = true;
                 threadStart = true;
                 TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock;
+
+                //アラームスレッドを実行する
                 alermThread = new Thread(new ThreadStart(()=> {
 
                     try
@@ -124,6 +129,7 @@ namespace NiceAlerm
                                         case 1: //毎月
                                             if (currentTime.Day != int.Parse(s.ScheduleValue))
                                             {
+                                                //31日は月の末日として判定する
                                                 if (currentTime.AddDays(1).Day != 1 || s.ScheduleValue != "31")
                                                 {
                                                     continue;
