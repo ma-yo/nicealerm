@@ -51,7 +51,8 @@
 
         <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="AlermNameTitleLabel" Content="登録名:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <xctk:WatermarkTextBox Name="TorokuNameTextBox" Text="" MaxLength="16" Watermark="登録名を入力してください。" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="6" FontSize="14" VerticalAlignment="Center" Margin="4,0,2,0" />
+        <xctk:WatermarkTextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="6" 
+                               x:Name="TorokuNameTextBox" Text="" MaxLength="16" Watermark="登録名を入力してください。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
 
         <Label Grid.Row="0" Grid.Column="9" Grid.ColumnSpan="2" 
                x:Name="EnableTitleLabel" Content="状態:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -69,7 +70,7 @@
         <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Hidden"
                x:Name="AlermMessageTitleLabel" Content="メッセージ:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <xctk:WatermarkTextBox Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="10"  Visibility="Hidden"
-                               x:Name="AlermMessageTextBox" Text="" MaxLength="32" Watermark="アラーム時に表示されるメッセージを入力してください。" FontSize="14" VerticalAlignment="Center" Margin="4,0,2,0" />
+                               x:Name="AlermMessageTextBox" Text="" MaxLength="32" Watermark="アラーム時に表示されるメッセージを入力してください。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
         <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"  Visibility="Hidden"
                x:Name="AlermFormBackColor" Content="枠色:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <xctk:ColorPicker Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2"  Visibility="Hidden"
@@ -86,7 +87,7 @@
         <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Hidden"
                x:Name="ExecLabel" Content="実行パス:" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <xctk:WatermarkTextBox Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="8" Visibility="Hidden"
-                               x:Name="ExecPathTextBox" Text="" Watermark="起動するアプリのパスを入力してください。" FontSize="14" VerticalAlignment="Center" Margin="4,0,2,0" />
+                               x:Name="ExecPathTextBox" Text="" Watermark="起動するアプリのパスを入力してください。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
         <Button Grid.Row="3" Grid.Column="11"  Visibility="Hidden"
                 x:Name="ExecChoiceButton" Content="参照" Margin="2,2,2,2" Click="ExecChoiceButton_Click" />
 
@@ -95,11 +96,11 @@
         <RadioButton Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="2" 
                      x:Name="OnetimeRadio" GroupName="ScheduleType" Content="1回のみ" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2"/>
         <xctk:MaskedTextBox Grid.Row="6" Grid.Column="5" Grid.ColumnSpan="3"
-                            x:Name="OnetimeDateTextBox" Mask="0000/00/00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
+                            x:Name="OnetimeDateTextBox" Mask="0000/00/00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
         <RadioButton Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" 
                      x:Name="MonthlyRadio" GroupName="ScheduleType" Content="毎月" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2"/>
         <xctk:IntegerUpDown Grid.Row="7" Grid.Column="5" Grid.ColumnSpan="2" 
-                            x:Name="MonthlyUpDown" FontSize="14" Minimum="1" Maximum="31" Value="1" Margin="4,2,2,2"/>
+                            x:Name="MonthlyUpDown" FontSize="16" Minimum="1" Maximum="31" Value="1" Margin="4,2,2,2"/>
         <Label Grid.Row="7" Grid.Column="7"
                x:Name="MonthlyLabel" Content="日" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <RadioButton Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2"
@@ -124,7 +125,7 @@
         <Label Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="TimeTitleLabel" Content="時刻設定:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <xctk:MaskedTextBox Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="3"
-                            x:Name="TimeTextBox" Mask="00:00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
+                            x:Name="TimeTextBox" Mask="00:00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
 
 
 
