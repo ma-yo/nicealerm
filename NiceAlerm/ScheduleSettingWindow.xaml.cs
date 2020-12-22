@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using NiceAlerm.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +35,7 @@ namespace NiceAlerm
         /// 変更フラグ
         /// </summary>
         private bool IsChanged { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -57,9 +60,9 @@ namespace NiceAlerm
             try
             {
                 EditData = alm.DeepCopy();
-                EnableCheck.IsChecked = EditData.Enable;
+                AlermEnableCheck.IsChecked = EditData.Enable;
                 TorokuNameTextBox.Text = EditData.Name;
-
+                AlermDeleteCheck.IsChecked = EditData.AlermDelete;
                 switch (EditData.ExecTypeIndex)
                 {
                     case 0:
@@ -117,6 +120,8 @@ namespace NiceAlerm
                 OnetimeRadio.IsChecked = true;
                 OnetimeDateTextBox.Text = DateTime.Now.ToString("yyyy/MM/dd");
                 MonthlyUpDown.Value = 1;
+                ScheduleEnableCheck.IsChecked = true;
+                ScheduleDeleteCheck.IsChecked = true;
                 Week1CheckBox.IsChecked = false;
                 Week1CheckBox.IsChecked = true;
                 Week1CheckBox.IsChecked = true;
@@ -189,9 +194,8 @@ namespace NiceAlerm
                     return null;
                 }
                 schedule.StartTime = startTime;
-
-
-
+                schedule.Enable = (bool)ScheduleEnableCheck.IsChecked;
+                schedule.ScheduleDelete = (bool)ScheduleDeleteCheck.IsChecked;
                 if ((bool)OnetimeRadio.IsChecked)
                 {
                     string value = OnetimeDateTextBox.Text;
@@ -239,6 +243,7 @@ namespace NiceAlerm
                     schedule.ScheduleType = DailyRadio.Content.ToString();
                     schedule.ScheduleTypeIndex = 3;
                 }
+
                 return schedule;
             }
             catch (Exception ex)
@@ -345,10 +350,9 @@ namespace NiceAlerm
                     EditData.Message = execPath;
                 }
 
-                EditData.Enable = (bool)EnableCheck.IsChecked;
+                EditData.Enable = (bool)AlermEnableCheck.IsChecked;
                 EditData.Name = name;
-
-
+                EditData.AlermDelete = (bool)AlermDeleteCheck.IsChecked;
                 Committed = true;
                 IsChanged = false;
                 this.Close();
@@ -358,6 +362,7 @@ namespace NiceAlerm
                 throw ex;
             }
         }
+ 
         /// <summary>
         /// 選択変更イベント
         /// </summary>
@@ -373,6 +378,8 @@ namespace NiceAlerm
                 Schedule schedule = (Schedule)ScheduleGrid.SelectedItem;
                 InitScheduleControl();
                 TimeTextBox.Text = schedule.StartTime;
+                ScheduleEnableCheck.IsChecked = schedule.Enable;
+                ScheduleDeleteCheck.IsChecked = schedule.ScheduleDelete;
                 switch (schedule.ScheduleTypeIndex)
                 {
                     case 0:
@@ -492,12 +499,12 @@ namespace NiceAlerm
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EnableCheck_Checked(object sender, RoutedEventArgs e)
+        private void AlermEnableCheck_Checked(object sender, RoutedEventArgs e)
         {
             try
             {
-                EnableCheck.Content = "有効";
-                EnableCheck.Foreground = new SolidColorBrush(Colors.Blue);
+                AlermEnableCheck.Content = "有効";
+                AlermEnableCheck.Foreground = new SolidColorBrush(Colors.Blue);
             }
             catch (Exception ex)
             {
@@ -509,12 +516,12 @@ namespace NiceAlerm
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EnableCheck_Unchecked(object sender, RoutedEventArgs e)
+        private void AlermEnableCheck_Unchecked(object sender, RoutedEventArgs e)
         {
             try
             {
-                EnableCheck.Content = "無効";
-                EnableCheck.Foreground = new SolidColorBrush(Colors.Red);
+                AlermEnableCheck.Content = "無効";
+                AlermEnableCheck.Foreground = new SolidColorBrush(Colors.Red);
             }
             catch (Exception ex)
             {
@@ -543,6 +550,66 @@ namespace NiceAlerm
             {
                 throw ex;
             }
+        }
+        /// <summary>
+        /// 削除チェックのチェックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AlermDeleteCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            AlermDeleteCheck.Content = "全スケジュール終了時にアラームを削除する";
+            AlermDeleteCheck.Foreground = new SolidColorBrush(Colors.Blue);
+        }
+        /// <summary>
+        /// 削除チェックのアンチェックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AlermDeleteCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            AlermDeleteCheck.Content = "全スケジュール終了時にアラームを削除しない";
+            AlermDeleteCheck.Foreground = new SolidColorBrush(Colors.Black);
+        }
+        /// <summary>
+        /// スケジュールの有効化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScheduleEnableCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            ScheduleEnableCheck.Content = "有効";
+            ScheduleEnableCheck.Foreground = new SolidColorBrush(Colors.Blue);
+        }
+        /// <summary>
+        /// スケジュールの無効化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScheduleEnableCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ScheduleEnableCheck.Content = "無効";
+            ScheduleEnableCheck.Foreground = new SolidColorBrush(Colors.Black);
+        }
+        /// <summary>
+        /// スケジュール終了時削除の有効化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScheduleDeleteCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            ScheduleDeleteCheck.Content = "スケジュール終了時に削除する";
+            ScheduleDeleteCheck.Foreground = new SolidColorBrush(Colors.Blue);
+        }
+        /// <summary>
+        /// スケジュール終了時削除の無効化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScheduleDeleteCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ScheduleDeleteCheck.Content = "スケジュール終了時に削除しない";
+            ScheduleDeleteCheck.Foreground = new SolidColorBrush(Colors.Black);
         }
     }
 }

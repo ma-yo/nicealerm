@@ -26,9 +26,9 @@ namespace NiceAlerm.Models
         /// </summary>
         public string ExecPath { get; set; } = "";
         /// <summary>
-        /// 最終通知時刻
+        /// 全スケジュール終了後にアラームを削除する
         /// </summary>
-        public DateTime LastAlerm { get; set; } = DateTime.Now;
+        public bool AlermDelete { get; set; } = true;
         /// <summary>
         /// 枠色
         /// </summary>
@@ -75,7 +75,6 @@ namespace NiceAlerm.Models
             {
                 Name = editData.Name;
                 Message = editData.Message;
-                LastAlerm = editData.LastAlerm;
                 LabelColor = editData.LabelColor;
                 EdgeColor = editData.EdgeColor;
                 ForeColor = editData.ForeColor;

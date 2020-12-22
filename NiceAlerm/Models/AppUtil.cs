@@ -34,5 +34,14 @@ namespace NiceAlerm.Models
             System.Version version = asmName.Version;
             return version.ToString();
         }
+
+        /// <summary>
+        /// AppDirのパスを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static string GetAppDirPath()
+        {
+            return System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\NiceAlerm";
+        }
     }
 }

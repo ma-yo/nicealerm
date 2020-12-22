@@ -1,6 +1,8 @@
-﻿using NiceAlerm.Models;
+﻿using Newtonsoft.Json;
+using NiceAlerm.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -25,6 +27,11 @@ namespace NiceAlerm
         /// アラームデータを保持する
         /// </summary>
         private List<Alerm> alermList;
+
+        /// <summary>
+        /// スケジュール設定ファイル
+        /// </summary>
+        private const string SCHEDULE_SETTING_FILE = "schedule-setting.json";
         /// <summary>
         /// Constructor
         /// </summary>
@@ -109,15 +116,82 @@ namespace NiceAlerm
             try
             {
                 ScheduleSettingWindow form = new ScheduleSettingWindow();
-                form.Init(new Alerm());
+                Alerm alerm = LoadFormSetting();
+                form.Init(alerm);
                 form.ShowDialog();
                 if (form.Committed)
                 {
                     AlermGrid.Items.Add(form.EditData);
                     alermList.Add(form.EditData);
+                    SaveFormSetting(form.EditData);
                 }
                 AlermGrid.SelectedIndex = AlermGrid.Items.Count - 1;
                 SetButtonEnabled();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 画面状態を保存する
+        /// </summary>
+        private void SaveFormSetting(Alerm alerm)
+        {
+            try
+            {
+                string appDir = AppUtil.GetAppDirPath() + @"\" + SCHEDULE_SETTING_FILE;
+
+                ScheduleSetting setting = new ScheduleSetting();
+                setting.EdgeColor = new byte[] { alerm.EdgeColor[0], alerm.EdgeColor[1], alerm.EdgeColor[2], alerm.EdgeColor[3] };
+                setting.LabelColor = new byte[] { alerm.LabelColor[0], alerm.LabelColor[1], alerm.LabelColor[2], alerm.LabelColor[3] };
+                setting.ForeColor = new byte[] { alerm.ForeColor[0], alerm.ForeColor[1], alerm.ForeColor[2], alerm.ForeColor[3] };
+                setting.AlermDelete = alerm.AlermDelete;
+                string jsonString = JsonConvert.SerializeObject(setting);
+                using (StreamWriter sw = new StreamWriter(appDir, false))
+                {
+                    sw.WriteLine(jsonString);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 画面状態を読み込む
+        /// </summary>
+        private Alerm LoadFormSetting()
+        {
+            try
+            {
+                string appDir = AppUtil.GetAppDirPath() + @"\" + SCHEDULE_SETTING_FILE;
+                ScheduleSetting setting = new ScheduleSetting();
+                if (!System.IO.File.Exists(appDir))
+                {
+                    string jsonString = JsonConvert.SerializeObject(setting);
+                    using (StreamWriter sw = new StreamWriter(appDir, false))
+                    {
+                        sw.WriteLine(jsonString);
+                    }
+                }
+                else
+                {
+                    using (StreamReader sr = new StreamReader(appDir))
+                    {
+                        string jsonString = sr.ReadToEnd();
+                        setting = JsonConvert.DeserializeObject<ScheduleSetting>(jsonString);
+                    }
+                }
+
+                Alerm alerm = new Alerm();
+                alerm.EdgeColor = setting.EdgeColor;
+                alerm.LabelColor = setting.LabelColor;
+                alerm.ForeColor = setting.ForeColor;
+                alerm.AlermDelete = setting.AlermDelete;
+                return alerm;
             }
             catch (Exception ex)
             {
@@ -155,6 +229,7 @@ namespace NiceAlerm
                 if (form.Committed)
                 {
                     edit.Clone(form.EditData);
+                    SaveFormSetting(form.EditData);
                     SetAlermGrid();
                 }
             }

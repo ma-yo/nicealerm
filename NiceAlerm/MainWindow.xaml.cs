@@ -41,10 +41,11 @@ namespace NiceAlerm
         /// 設定ファイル
         /// </summary>
         private const string SETTING_FILE = "setting.json";
+
         /// <summary>
         /// アラーム用スレッド
         /// </summary>
-        private Thread alermThread;
+        private Task alermThread;
         /// <summary>
         /// スレッド状態ﾌﾗｸﾞ
         /// </summary>
@@ -103,9 +104,7 @@ namespace NiceAlerm
                 threadStart = true;
                 TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock;
 
-                //アラームスレッドを実行する
-                alermThread = new Thread(new ThreadStart(()=> {
-
+                alermThread = Task.Run(() => {
                     try
                     {
                         while (threadStart)
@@ -114,30 +113,33 @@ namespace NiceAlerm
                             {
                                 Thread.Sleep(100);
                             }
-                            DateTime currentTime = DateTime.Now;
+                            bool alermChanged = false;
+                            DateTime currentDateTime = DateTime.Now;
                             List<Alerm> removeList = new List<Alerm>();
                             foreach (var a in alermList.Where(a => a.Enable))
                             {
-                                bool alerm = false;
-                                foreach (var s in a.ScheduleList)
+                                List<Schedule> removeScheduleList = new List<Schedule>();
+
+                                bool alermStarted = false;
+                                foreach (var s in a.ScheduleList.Where(b => b.Enable))
                                 {
                                     switch (s.ScheduleTypeIndex)
                                     {
                                         case 0: //指定日
-                                            if (currentTime.ToString("yyyy/MM/dd") != s.ScheduleValue) continue;
+                                            if (currentDateTime.ToString("yyyy/MM/dd") != s.ScheduleValue) continue;
                                             break;
                                         case 1: //毎月
-                                            if (currentTime.Day != int.Parse(s.ScheduleValue))
+                                            if (currentDateTime.Day != int.Parse(s.ScheduleValue))
                                             {
                                                 //31日は月の末日として判定する
-                                                if (currentTime.AddDays(1).Day != 1 || s.ScheduleValue != "31")
+                                                if (currentDateTime.AddDays(1).Day != 1 || s.ScheduleValue != "31")
                                                 {
                                                     continue;
                                                 }
                                             }
                                             break;
                                         case 2: //毎週
-                                            switch (currentTime.DayOfWeek)
+                                            switch (currentDateTime.DayOfWeek)
                                             {
                                                 case DayOfWeek.Monday:
                                                     if (!s.ScheduleValue.Contains("月")) continue;
@@ -165,13 +167,14 @@ namespace NiceAlerm
                                         case 3: //毎日
                                             break;
                                     }
-                                    string startTime = currentTime.ToString("HH:mm");
-                                    if (startTime == s.StartTime)
+
+                                    string currentTime = currentDateTime.ToString("HH:mm");
+                                    if (currentTime == s.StartTime)
                                     {
-                                        if ((a.LastAlerm - currentTime).Minutes != 0)
+                                        if (s.LastAlerm.ToString("yyyy/MM/dd HH:mm:00") != currentDateTime.ToString("yyyy/MM/dd HH:mm:00"))
                                         {
-                                            a.LastAlerm = currentTime;
-                                            alerm = true;
+                                            s.LastAlerm = currentDateTime;
+                                            alermStarted = true;
                                             this.Dispatcher.Invoke((Action)(() =>
                                             {
                                                 switch (a.ExecTypeIndex)
@@ -205,24 +208,40 @@ namespace NiceAlerm
                                         }
                                     }
                                     //既に時刻を過ぎていたら処理したことにする
-                                    if (int.Parse(startTime.Replace(":", "")) > int.Parse(s.StartTime.Replace(":", "")))
+                                    if (int.Parse(currentTime.Replace(":", "")) > int.Parse(s.StartTime.Replace(":", "")))
                                     {
-                                        alerm = true;
+                                        alermStarted = true;
+                                    }
+                                    if (alermStarted)
+                                    {
+                                        if (s.ScheduleTypeIndex == 0 && s.ScheduleDelete)
+                                        {
+                                            removeScheduleList.Add(s);
+                                        }
                                     }
                                 }
-                                if (alerm)
+
+                                foreach (var remove in removeScheduleList)
                                 {
-                                    //スケジュールが日付指定の1件のみの場合は、アラームを削除する
-                                    if (a.ScheduleList.Count == 1 && a.ScheduleList[0].ScheduleTypeIndex == 0)
-                                    {
-                                        removeList.Add(a);
-                                    }
+                                    alermChanged = true;
+                                    a.ScheduleList.Remove(remove);
+                                }
+                                //スケジュールが0の場合は削除する
+                                if (a.ScheduleList.Count == 0 && a.AlermDelete)
+                                {
+                                    removeList.Add(a);
                                 }
                             }
                             foreach (Alerm r in removeList)
                             {
                                 logger.Info("スケジュール削除 ⇒ " + r.Name);
                                 alermList.Remove(r);
+                                alermChanged = true;
+                            }
+
+                            if (alermChanged)
+                            {
+                                SaveAlerm();
                             }
                             if (alermList.Count == 0)
                             {
@@ -244,8 +263,7 @@ namespace NiceAlerm
                         logger.Error(ex.StackTrace);
                         throw ex;
                     }
-                }));
-                alermThread.Start();
+                });
             }
             catch (Exception ex)
             {
@@ -262,7 +280,7 @@ namespace NiceAlerm
         {
             try
             {
-                string appDirPath = GetAppDirPath();
+                string appDirPath = AppUtil.GetAppDirPath();
                 if (!System.IO.Directory.Exists(appDirPath))
                 {
                     System.IO.Directory.CreateDirectory(appDirPath);
@@ -280,23 +298,7 @@ namespace NiceAlerm
                 throw ex;
             }
         }
-        /// <summary>
-        /// AppDirのパスを取得する
-        /// </summary>
-        /// <returns></returns>
-        private string GetAppDirPath()
-        {
-            try
-            {
-                return System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\NiceAlerm";
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex.Message);
-                logger.Error(ex.StackTrace);
-                throw ex;
-            }
-        }
+
         /// <summary>
         /// アラームデータを読み込む
         /// </summary>
@@ -304,7 +306,7 @@ namespace NiceAlerm
         {
             try
             {
-                string filePath = GetAppDirPath() + @"\" + SETTING_FILE;
+                string filePath = AppUtil.GetAppDirPath() + @"\" + SETTING_FILE;
                 if (!System.IO.File.Exists(filePath))
                 {
                     string json = JsonConvert.SerializeObject(alermList);
@@ -321,6 +323,9 @@ namespace NiceAlerm
                         alermList = JsonConvert.DeserializeObject<List<Alerm>>(json);
                     }
                 }
+
+                //不要アラームの削除
+                
             }
             catch (Exception ex)
             {
@@ -336,7 +341,7 @@ namespace NiceAlerm
         {
             try
             {
-                string filePath = GetAppDirPath() + @"\" + SETTING_FILE;
+                string filePath = AppUtil.GetAppDirPath() + @"\" + SETTING_FILE;
                 string json = JsonConvert.SerializeObject(alermList);
                 using (StreamWriter sw = new StreamWriter(filePath))
                 {
@@ -379,7 +384,7 @@ namespace NiceAlerm
             try
             {
                 threadStart = false;
-                while (alermThread != null && alermThread.IsAlive)
+                while (alermThread != null && !alermThread.IsCompleted)
                 {
                     Thread.Sleep(100);
                 }
@@ -406,7 +411,7 @@ namespace NiceAlerm
         {
             try
             {
-                threadStart = false;
+                StopAlermThread();
             }
             catch (Exception ex)
             {

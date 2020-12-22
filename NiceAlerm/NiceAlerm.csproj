@@ -92,6 +92,7 @@
       <DependentUpon>AlermWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AppUtil.cs" />
+    <Compile Include="Models\ScheduleSetting.cs" />
     <Compile Include="Models\Singleton.cs" />
     <Compile Include="ScheduleSettingWindow.xaml.cs">
       <DependentUpon>ScheduleSettingWindow.xaml</DependentUpon>

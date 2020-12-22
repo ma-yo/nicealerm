@@ -55,11 +55,17 @@
                                x:Name="TorokuNameTextBox" Text="" MaxLength="16" Watermark="登録名を入力してください。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
 
         <Label Grid.Row="0" Grid.Column="9" Grid.ColumnSpan="2" 
-               x:Name="EnableTitleLabel" Content="状態:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+               x:Name="AlermEnableTitleLabel" Content="状態:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox Grid.Row="0" Grid.Column="10" Grid.ColumnSpan="2" 
-                  x:Name="EnableCheck" Content="有効" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="EnableCheck_Checked" Unchecked="EnableCheck_Unchecked"/>
+                  x:Name="AlermEnableCheck" Content="有効" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="AlermEnableCheck_Checked" Unchecked="AlermEnableCheck_Unchecked"/>
         <Button Grid.Row="0" Grid.Column="14" Grid.ColumnSpan="2" x:Name="CommitButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="登 録" Margin="2,2,2,2" Click="CommitButton_Click"/>
 
+        <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
+               x:Name="DeleteTitleLabel" Content="削除:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="6" 
+                  x:Name="AlermDeleteCheck" Content="全スケジュール終了時にアラームを削除する" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2,4,2" Checked="AlermDeleteCheck_Checked" Unchecked="AlermDeleteCheck_Unchecked"/>
+
+        
         <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="ExecTitleLabel" Content="処理選択:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <RadioButton Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" 
@@ -97,6 +103,13 @@
                      x:Name="OnetimeRadio" GroupName="ScheduleType" Content="1回のみ" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2"/>
         <xctk:MaskedTextBox Grid.Row="6" Grid.Column="5" Grid.ColumnSpan="3"
                             x:Name="OnetimeDateTextBox" Mask="0000/00/00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
+
+        <Label Grid.Row="6" Grid.Column="7" Grid.ColumnSpan="2" 
+               x:Name="ScheduleDeleteTitleLabel" Content="削除:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="6" Grid.Column="9" Grid.ColumnSpan="6" 
+                  x:Name="ScheduleDeleteCheck" Content="スケジュール終了時に削除する" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ScheduleDeleteCheck_Checked"  Unchecked="ScheduleDeleteCheck_Unchecked"  Margin="4,2,4,2"/>
+
+
         <RadioButton Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" 
                      x:Name="MonthlyRadio" GroupName="ScheduleType" Content="毎月" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2"/>
         <xctk:IntegerUpDown Grid.Row="7" Grid.Column="5" Grid.ColumnSpan="2" 
@@ -128,6 +141,10 @@
                             x:Name="TimeTextBox" Mask="00:00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
 
 
+        <Label Grid.Row="10" Grid.Column="6" Grid.ColumnSpan="2" 
+               x:Name="ScheduleEnableTitleLabel" Content="状態:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="10" Grid.Column="7" Grid.ColumnSpan="2" 
+                  x:Name="ScheduleEnableCheck" Content="有効" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="ScheduleEnableCheck_Checked"  Unchecked="ScheduleEnableCheck_Unchecked"/>
 
 
         <Button Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2"
