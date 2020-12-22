@@ -13,7 +13,7 @@ namespace NiceAlerm.Models
         public byte[] ForeColor { get; set; }
         public byte[] LabelColor { get; set; }
         public byte[] EdgeColor { get; set; }
-        public bool AlermDelete { get; internal set; }
+        public bool AlermDelete { get; set; }
 
         public ScheduleSetting()
         {

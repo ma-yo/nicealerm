@@ -63,7 +63,7 @@
         <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="DeleteTitleLabel" Content="削除:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="6" 
-                  x:Name="AlermDeleteCheck" Content="全スケジュール終了時にアラームを削除する" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2,4,2" Checked="AlermDeleteCheck_Checked" Unchecked="AlermDeleteCheck_Unchecked"/>
+                  x:Name="AlermDeleteCheck" Content="全スケジュール終了時にアラームを削除しない" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2,4,2" Checked="AlermDeleteCheck_Checked" Unchecked="AlermDeleteCheck_Unchecked"/>
 
         
         <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
@@ -107,7 +107,7 @@
         <Label Grid.Row="6" Grid.Column="7" Grid.ColumnSpan="2" 
                x:Name="ScheduleDeleteTitleLabel" Content="削除:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox Grid.Row="6" Grid.Column="9" Grid.ColumnSpan="6" 
-                  x:Name="ScheduleDeleteCheck" Content="スケジュール終了時に削除する" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ScheduleDeleteCheck_Checked"  Unchecked="ScheduleDeleteCheck_Unchecked"  Margin="4,2,4,2"/>
+                  x:Name="ScheduleDeleteCheck" Content="スケジュール終了時に削除しない" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ScheduleDeleteCheck_Checked"  Unchecked="ScheduleDeleteCheck_Unchecked"  Margin="4,2,4,2"/>
 
 
         <RadioButton Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" 
