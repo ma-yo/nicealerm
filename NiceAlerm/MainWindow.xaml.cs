@@ -54,6 +54,7 @@ namespace NiceAlerm
         /// スレッド中断フラグ
         /// </summary>
         private volatile bool threadPause = false;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -62,7 +63,6 @@ namespace NiceAlerm
             try
             {
                 InitializeComponent();
-
                 CreateAppDir();
                 LoadAlerm();
 
@@ -87,6 +87,8 @@ namespace NiceAlerm
                 MessageBox.Show(ex.Message);
             }
         }
+
+
         /// <summary>
         /// アラームスレッドを開始する
         /// </summary>
@@ -186,6 +188,7 @@ namespace NiceAlerm
                                                         form.MainBorder.Background = new SolidColorBrush(Color.FromArgb(a.LabelColor[0], a.LabelColor[1], a.LabelColor[2], a.LabelColor[3]));
                                                         form.MessageText.Foreground = new SolidColorBrush(Color.FromArgb(a.ForeColor[0], a.ForeColor[1], a.ForeColor[2], a.ForeColor[3]));
                                                         form.MessageText.Text = a.Message;
+                                                        form.MessageText.FontFamily = new FontFamily(a.FontName);
                                                         form.Title = s.StartTime + " ⇒ " + a.Name;
                                                         form.Show();
                                                         break;
@@ -323,9 +326,7 @@ namespace NiceAlerm
                         alermList = JsonConvert.DeserializeObject<List<Alerm>>(json);
                     }
                 }
-
                 //不要アラームの削除
-                
             }
             catch (Exception ex)
             {
@@ -366,7 +367,6 @@ namespace NiceAlerm
             {
                 SaveAlerm();
                 StopAlermThread();
-
                 this.Close();
             }
             catch (Exception ex)

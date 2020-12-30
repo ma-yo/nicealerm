@@ -54,8 +54,13 @@ namespace NiceAlerm.Models
         /// スケジュール一覧
         /// </summary>
         public List<Schedule> ScheduleList { get; set; } = new List<Schedule>();
+        /// <summary>
+        /// フォント名
+        /// </summary>
+        public string FontName { get; set; } = "Meiryo UI";
 
         private bool _enable = true;
+
         /// <summary>
         /// 有効無効
         /// </summary>
@@ -82,7 +87,7 @@ namespace NiceAlerm.Models
                 ExecPath = editData.ExecPath;
                 ExecType = editData.ExecType;
                 ExecTypeIndex = editData.ExecTypeIndex;
-
+                FontName = editData.FontName;
                 ScheduleList.Clear();
                 foreach (var s in editData.ScheduleList)
                 {

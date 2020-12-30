@@ -14,6 +14,7 @@ namespace NiceAlerm.Models
         public byte[] LabelColor { get; set; }
         public byte[] EdgeColor { get; set; }
         public bool AlermDelete { get; set; }
+        public string FontName { get; set; }
 
         public ScheduleSetting()
         {
@@ -29,6 +30,7 @@ namespace NiceAlerm.Models
                 ,Colors.Orange.R
                 ,Colors.Orange.G
                 ,Colors.Orange.B};
+            FontName = "Meiryo UI";
         }
     }
 }

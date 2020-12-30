@@ -36,6 +36,7 @@ namespace NiceAlerm
         /// </summary>
         private bool IsChanged { get; set; }
 
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -45,12 +46,19 @@ namespace NiceAlerm
             {
                 InitializeComponent();
                 Title = "NiceAlerm - スケジュール設定 ver " + AppUtil.GetVersion();
+
+                foreach(var font in Fonts.SystemFontFamilies)
+                {
+                    FontModel model = new FontModel(font.Source);
+                    FontComboBox.Items.Add(model);
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         /// <summary>
         /// 初期化処理を行う
         /// </summary>
@@ -71,6 +79,13 @@ namespace NiceAlerm
                         EdgeColorColorPicker.SelectedColor = Color.FromArgb(EditData.EdgeColor[0], EditData.EdgeColor[1], EditData.EdgeColor[2], EditData.EdgeColor[3]);
                         LabelColorColorPicker.SelectedColor = Color.FromArgb(EditData.LabelColor[0], EditData.LabelColor[1], EditData.LabelColor[2], EditData.LabelColor[3]);
                         ForeColorColorPicker.SelectedColor = Color.FromArgb(EditData.ForeColor[0], EditData.ForeColor[1], EditData.ForeColor[2], EditData.ForeColor[3]);
+                        SetSelectedFont(EditData.FontName);
+
+
+                        SetFontSampleBorderColor();
+                        SetFontSampleBackColor();
+                        SetFontSampleForeColor();
+
                         break;
                     case 1:
                         ExecRadio.IsChecked = true;
@@ -86,6 +101,54 @@ namespace NiceAlerm
                 throw ex;
             }
         }
+        /// <summary>
+        /// サンプルラベルの文字色設定
+        /// </summary>
+        private void SetFontSampleForeColor()
+        {
+            if (!ForeColorColorPicker.SelectedColor.HasValue) return;
+            if (FontSampleLabel == null) return;
+            FontSampleLabel.Foreground = new SolidColorBrush(ForeColorColorPicker.SelectedColor.Value);
+        }
+        /// <summary>
+        /// サンプルラベルの背景色設定
+        /// </summary>
+        private void SetFontSampleBackColor()
+        {
+            if (!LabelColorColorPicker.SelectedColor.HasValue) return;
+            if (FontSampleBorder == null) return;
+            FontSampleBorder.Background = new SolidColorBrush(LabelColorColorPicker.SelectedColor.Value);
+        }
+        /// <summary>
+        /// サンプルラベルのボーダー色設定
+        /// </summary>
+        private void SetFontSampleBorderColor()
+        {
+            if (!EdgeColorColorPicker.SelectedColor.HasValue) return;
+            if (FontSampleBorder == null) return;
+            FontSampleBorder.BorderBrush = new SolidColorBrush(EdgeColorColorPicker.SelectedColor.Value);
+        }
+
+        //フォントを選択する
+        private void SetSelectedFont(string fontName)
+        {
+            try
+            {
+                foreach(FontModel item in FontComboBox.Items)
+                {
+                    if(item.Name == fontName)
+                    {
+                        FontComboBox.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// スケジュールグリッドを作成する
         /// </summary>
@@ -336,6 +399,7 @@ namespace NiceAlerm
                 ,ForeColorColorPicker.SelectedColor.Value.R
                 ,ForeColorColorPicker.SelectedColor.Value.G
                 ,ForeColorColorPicker.SelectedColor.Value.B};
+                    EditData.FontName = ((FontModel)FontComboBox.SelectedItem).Name;
                 }
 
                 if ((bool)ExecRadio.IsChecked)
@@ -454,10 +518,14 @@ namespace NiceAlerm
                 LabelColorColorPicker.Visibility = Visibility.Visible;
                 AlermFormForeColor.Visibility = Visibility.Visible;
                 ForeColorColorPicker.Visibility = Visibility.Visible;
+                FontLabel.Visibility = Visibility.Visible;
+                FontComboBox.Visibility = Visibility.Visible;
+                FontSampleBorder.Visibility = Visibility.Visible;
 
                 ExecLabel.Visibility = Visibility.Hidden;
                 ExecPathTextBox.Visibility = Visibility.Hidden;
                 ExecChoiceButton.Visibility = Visibility.Hidden;
+
             }
             catch (Exception ex)
             {
@@ -484,10 +552,14 @@ namespace NiceAlerm
                 LabelColorColorPicker.Visibility = Visibility.Hidden;
                 AlermFormForeColor.Visibility = Visibility.Hidden;
                 ForeColorColorPicker.Visibility = Visibility.Hidden;
+                FontLabel.Visibility = Visibility.Hidden;
+                FontComboBox.Visibility = Visibility.Hidden;
+                FontSampleBorder.Visibility = Visibility.Hidden;
 
                 ExecLabel.Visibility = Visibility.Visible;
                 ExecPathTextBox.Visibility = Visibility.Visible;
                 ExecChoiceButton.Visibility = Visibility.Visible;
+
             }
             catch (Exception ex)
             {
@@ -610,6 +682,45 @@ namespace NiceAlerm
         {
             ScheduleDeleteCheck.Content = "スケジュール終了時に削除しない";
             ScheduleDeleteCheck.Foreground = new SolidColorBrush(Colors.Black);
+        }
+
+        private void FontComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                FontSampleLabel.FontFamily = ((FontModel)FontComboBox.SelectedItem).FontFamily;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// エッヂ色を設定する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EdgeColorColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            SetFontSampleBorderColor();
+        }
+        /// <summary>
+        /// ラベル色を設定する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LabelColorColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            SetFontSampleBackColor();
+        }
+        /// <summary>
+        /// フォント色を設定する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ForeColorColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            SetFontSampleForeColor();
         }
     }
 }

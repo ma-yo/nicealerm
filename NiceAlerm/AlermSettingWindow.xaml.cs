@@ -148,6 +148,7 @@ namespace NiceAlerm
                 setting.LabelColor = new byte[] { alerm.LabelColor[0], alerm.LabelColor[1], alerm.LabelColor[2], alerm.LabelColor[3] };
                 setting.ForeColor = new byte[] { alerm.ForeColor[0], alerm.ForeColor[1], alerm.ForeColor[2], alerm.ForeColor[3] };
                 setting.AlermDelete = alerm.AlermDelete;
+                setting.FontName = alerm.FontName;
                 string jsonString = JsonConvert.SerializeObject(setting);
                 using (StreamWriter sw = new StreamWriter(appDir, false))
                 {
@@ -191,6 +192,7 @@ namespace NiceAlerm
                 alerm.LabelColor = setting.LabelColor;
                 alerm.ForeColor = setting.ForeColor;
                 alerm.AlermDelete = setting.AlermDelete;
+                alerm.FontName = setting.FontName;
                 return alerm;
             }
             catch (Exception ex)
