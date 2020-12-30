@@ -30,7 +30,7 @@
         <Button Grid.Row="0" Grid.Column="1" x:Name="EditButton" Background="LimeGreen" Foreground="White" FontWeight="Bold" FontSize="14" Content="修正" Margin="0,2,2,2" Click="EditButton_Click"/>
         <Button Grid.Row="0" Grid.Column="2" x:Name="RemoveButton" Background="Firebrick" Foreground="White" FontWeight="Bold" FontSize="14" Content="削除" Margin="0,2,2,2" Click="RemoveButton_Click"/>
 
-        <DataGrid x:Name="AlermGrid" SelectionMode="Single" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" FontSize="14" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,2,2,2" MouseDoubleClick="AlermGrid_MouseDoubleClick">
+        <DataGrid x:Name="AlermGrid" SelectionMode="Single" HeadersVisibility="Column" CanUserReorderColumns="False" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" FontSize="14" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,2,2,2" MouseDoubleClick="AlermGrid_MouseDoubleClick">
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DeepSkyBlue"  />
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="DeepSkyBlue" />

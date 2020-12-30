@@ -50,7 +50,6 @@
 
         </Grid.ColumnDefinitions>
 
-
         <!--ROW0-->
         <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="AlermNameTitleLabel" Content="登録名:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -61,15 +60,13 @@
                x:Name="AlermEnableTitleLabel" Content="状態:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox Grid.Row="0" Grid.Column="10" Grid.ColumnSpan="2" 
                   x:Name="AlermEnableCheck" Content="有効" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="AlermEnableCheck_Checked" Unchecked="AlermEnableCheck_Unchecked"/>
-        <Button Grid.Row="0" Grid.Column="14" Grid.ColumnSpan="2" x:Name="CommitButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="登 録" Margin="2,2,2,2" Click="CommitButton_Click"/>
-
+        <Button Grid.Row="0" Grid.Column="14" Grid.ColumnSpan="2" x:Name="CommitButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="アラーム登録" Margin="2,2,2,2" Click="CommitButton_Click"/>
 
         <!--ROW1-->
         <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="DeleteTitleLabel" Content="アラーム削除:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="6" 
                   x:Name="AlermDeleteCheck" Content="全スケジュール終了時にアラームを削除しない" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2,4,2" Checked="AlermDeleteCheck_Checked" Unchecked="AlermDeleteCheck_Unchecked"/>
-
 
         <!--ROW2-->
         <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
@@ -78,7 +75,6 @@
                      x:Name="AlermRadio" GroupName="ExecType" Content="アラーム" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2" Checked="AlermRadio_Checked"/>
         <RadioButton Grid.Row="2" Grid.Column="5" Grid.ColumnSpan="3" 
                      x:Name="ExecRadio" GroupName="ExecType" Content="外部アプリ実行" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2" Checked="ExecRadio_Checked"/>
-
 
         <!--ROW3-->
         <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
@@ -91,7 +87,6 @@
                                x:Name="ExecPathTextBox" Text="" Watermark="起動するアプリのパスを入力してください。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
         <Button Grid.Row="3" Grid.Column="11"
                 x:Name="ExecChoiceButton" Content="参照" Margin="2,2,2,2" Click="ExecChoiceButton_Click" />
-
 
         <!--ROW4-->
         <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
@@ -107,19 +102,17 @@
         <xctk:ColorPicker Grid.Row="4" Grid.Column="11" Grid.ColumnSpan="2"
                           x:Name="ForeColorColorPicker" SelectedColor="Tomato" Margin="4,2,2,2" SelectedColorChanged="ForeColorColorPicker_SelectedColorChanged" />
 
-
-        <!--ROW5-->
-        <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+        <!--ROW5--><!--ROW6-->
+        <Label Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2"
                x:Name="FontLabel" Content="フォント:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-        <ComboBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="4" x:Name="FontComboBox" FontSize="14"  Margin="4,2,2,2" SelectionChanged="FontComboBox_SelectionChanged" />
+        <ComboBox Grid.Row="5" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="4" x:Name="FontComboBox"
+                  VerticalAlignment="Center" FontSize="14"  Margin="4,2,2,2" SelectionChanged="FontComboBox_SelectionChanged" />
 
         <Border Grid.Row="5" Grid.Column="7" Grid.RowSpan="2" Grid.ColumnSpan="8" x:Name="FontSampleBorder"
                  BorderThickness="4"  Margin="4,2,4,2">
             <TextBlock  x:Name="FontSampleLabel" FontSize="24" Text="あいうえおアイウエオ亜伊鵜絵緒" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Border>
-        
-        <!--ROW6-->
         
         <!--ROW7-->
         <Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
@@ -134,7 +127,6 @@
         <CheckBox Grid.Row="7" Grid.Column="10" Grid.ColumnSpan="6" 
                   x:Name="ScheduleDeleteCheck" Content="スケジュール終了時に削除しない" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ScheduleDeleteCheck_Checked"  Unchecked="ScheduleDeleteCheck_Unchecked"  Margin="4,2,4,2"/>
 
-
         <!--ROW8-->
         <RadioButton Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" 
                      x:Name="MonthlyRadio" GroupName="ScheduleType" Content="毎月" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2"/>
@@ -142,7 +134,6 @@
                             x:Name="MonthlyUpDown" FontSize="16" Minimum="1" Maximum="31" Value="1" Margin="4,2,2,2"/>
         <Label Grid.Row="8" Grid.Column="7"
                x:Name="MonthlyLabel" Content="日" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
 
         <!--ROW9-->
         <RadioButton Grid.Row="9" Grid.Column="3" Grid.ColumnSpan="2"
@@ -166,7 +157,6 @@
         <RadioButton Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"
                      x:Name="DailyRadio" GroupName="ScheduleType" Content="毎日" FontSize="14" VerticalAlignment="Center" Margin="4,2,4,2"/>
 
-        
         <!--ROW11-->
         <Label Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="TimeTitleLabel" Content="時刻設定:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -177,7 +167,7 @@
         <CheckBox Grid.Row="11" Grid.Column="7" Grid.ColumnSpan="2" 
                   x:Name="ScheduleEnableCheck" Content="有効" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="ScheduleEnableCheck_Checked"  Unchecked="ScheduleEnableCheck_Unchecked"/>
         <Button Grid.Row="11" Grid.Column="10" Grid.ColumnSpan="2"
-                x:Name="AddButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="追加" Margin="2,2,2,2" Click="AddButton_Click"/>
+                x:Name="AddButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="13" Content="スケジュール追加" Margin="2,2,2,2" Click="AddButton_Click"/>
         <Button Grid.Row="11" Grid.Column="12" Grid.ColumnSpan="2"
                 x:Name="EditButton" Background="LimeGreen" Foreground="White" FontWeight="Bold" FontSize="14" Content="修正" Margin="2,2,2,2" Click="EditButton_Click"/>
         <Button Grid.Row="11" Grid.Column="14" Grid.ColumnSpan="2"
@@ -185,7 +175,7 @@
 
         <!-- ROW12 -->
         <DataGrid Grid.Row="12" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="16"
-                  x:Name="ScheduleGrid" FontSize="14" AutoGenerateColumns="False"  HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" Margin="0,2,2,2"
+                  x:Name="ScheduleGrid" FontSize="14" AutoGenerateColumns="False" HeadersVisibility="Column" CanUserReorderColumns="False" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" Margin="0,2,2,2"
                    SelectionChanged="ScheduleGrid_SelectionChanged" SelectionUnit="FullRow">
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DeepSkyBlue"  />
