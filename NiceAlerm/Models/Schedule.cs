@@ -51,6 +51,10 @@ namespace NiceAlerm.Models
         public DateTime LastAlerm { get; set; } = DateTime.Parse("2020/01/01 00:00:00");
 
         /// <summary>
+        /// 加算値
+        /// </summary>
+        public int StartAddTime { get; set; }
+        /// <summary>
         /// オブジェクトのコピーを行う
         /// </summary>
         /// <param name="schedule"></param>
@@ -63,6 +67,7 @@ namespace NiceAlerm.Models
             LastAlerm = schedule.LastAlerm;
             Enable = schedule.Enable;
             ScheduleDelete = schedule.ScheduleDelete;
+            StartAddTime = schedule.StartAddTime;
         }
     }
 }

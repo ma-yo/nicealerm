@@ -193,6 +193,7 @@ namespace NiceAlerm
                 Week1CheckBox.IsChecked = true;
                 Week1CheckBox.IsChecked = false;
                 TimeTextBox.Text = "08:00";
+                TimeAddUpDown.Value = 0;
             }
             catch (Exception ex)
             {
@@ -257,6 +258,7 @@ namespace NiceAlerm
                     return null;
                 }
                 schedule.StartTime = startTime;
+                schedule.StartAddTime = TimeAddUpDown.Value.Value;
                 schedule.Enable = (bool)ScheduleEnableCheck.IsChecked;
                 schedule.ScheduleDelete = (bool)ScheduleDeleteCheck.IsChecked;
                 if ((bool)OnetimeRadio.IsChecked)
@@ -442,6 +444,7 @@ namespace NiceAlerm
                 Schedule schedule = (Schedule)ScheduleGrid.SelectedItem;
                 InitScheduleControl();
                 TimeTextBox.Text = schedule.StartTime;
+                TimeAddUpDown.Value = schedule.StartAddTime;
                 ScheduleEnableCheck.IsChecked = schedule.Enable;
                 ScheduleDeleteCheck.IsChecked = schedule.ScheduleDelete;
                 switch (schedule.ScheduleTypeIndex)
@@ -721,6 +724,15 @@ namespace NiceAlerm
         private void ForeColorColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             SetFontSampleForeColor();
+        }
+        /// <summary>
+        /// 当日にリセットする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResetDateButton_Click(object sender, RoutedEventArgs e)
+        {
+            OnetimeDateTextBox.Text = DateTime.Now.ToString("yyyy/MM/dd");
         }
     }
 }

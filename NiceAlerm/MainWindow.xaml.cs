@@ -171,7 +171,8 @@ namespace NiceAlerm
                                     }
 
                                     string currentTime = currentDateTime.ToString("HH:mm");
-                                    if (currentTime == s.StartTime)
+                                    string startTime = DateTime.Parse("2000/01/01 " + s.StartTime + ":00").AddMinutes(s.StartAddTime).ToString("HH:mm");
+                                    if (currentTime == startTime)
                                     {
                                         if (s.LastAlerm.ToString("yyyy/MM/dd HH:mm:00") != currentDateTime.ToString("yyyy/MM/dd HH:mm:00"))
                                         {
