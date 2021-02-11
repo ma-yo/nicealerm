@@ -234,6 +234,8 @@ namespace NiceAlerm
                 ScheduleGrid.Items.Add(schedule);
                 EditData.ScheduleList.Add(schedule);
                 SetButtonEnabled();
+
+                ScheduleGrid.SelectedIndex = ScheduleGrid.Items.Count - 1;
             }
             catch (Exception ex)
             {
@@ -326,6 +328,8 @@ namespace NiceAlerm
         {
             try
             {
+                if (ScheduleGrid.SelectedIndex < 0) return;
+
                 Schedule schedule = GetScheduleFromControl();
                 if (schedule == null) return;
 
@@ -355,6 +359,10 @@ namespace NiceAlerm
             ScheduleGrid.Items.Remove(remove);
             EditData.ScheduleList.Remove(remove);
             SetButtonEnabled();
+            if(ScheduleGrid.Items.Count > 0)
+            {
+                ScheduleGrid.SelectedIndex = 0;
+            }
         }
         /// <summary>
         /// 確定ボタンのクリックイベント

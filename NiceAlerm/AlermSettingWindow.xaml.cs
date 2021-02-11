@@ -258,6 +258,10 @@ namespace NiceAlerm
                 AlermGrid.Items.Remove(remove);
                 alermList.Remove(remove);
                 SetButtonEnabled();
+                if(AlermGrid.Items.Count > 0)
+                {
+                    AlermGrid.SelectedIndex = 0;
+                }
             }
             catch (Exception ex)
             {
