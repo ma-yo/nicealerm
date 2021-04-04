@@ -91,10 +91,16 @@
     <Compile Include="AlermWindow.xaml.cs">
       <DependentUpon>AlermWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CalendarWindow.xaml.cs">
+      <DependentUpon>CalendarWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppUtil.cs" />
     <Compile Include="Models\FontModel.cs" />
     <Compile Include="Models\ScheduleSetting.cs" />
     <Compile Include="Models\Singleton.cs" />
+    <Compile Include="ReScheduleWindow.xaml.cs">
+      <DependentUpon>ReScheduleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScheduleSettingWindow.xaml.cs">
       <DependentUpon>ScheduleSettingWindow.xaml</DependentUpon>
     </Compile>
@@ -103,6 +109,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AlermWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CalendarWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -121,6 +131,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ReScheduleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ScheduleSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

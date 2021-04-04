@@ -47,7 +47,7 @@ namespace NiceAlerm
                 InitializeComponent();
                 Title = "NiceAlerm - スケジュール設定 ver " + AppUtil.GetVersion();
 
-                foreach(var font in Fonts.SystemFontFamilies)
+                foreach (var font in Fonts.SystemFontFamilies)
                 {
                     FontModel model = new FontModel(font.Source);
                     FontComboBox.Items.Add(model);
@@ -71,6 +71,7 @@ namespace NiceAlerm
                 AlermEnableCheck.IsChecked = EditData.Enable;
                 TorokuNameTextBox.Text = EditData.Name;
                 AlermDeleteCheck.IsChecked = EditData.AlermDelete;
+                TimeAddUpDown.Value = EditData.TimeAddUpDown;
                 switch (EditData.ExecTypeIndex)
                 {
                     case 0:
@@ -134,9 +135,9 @@ namespace NiceAlerm
         {
             try
             {
-                foreach(FontModel item in FontComboBox.Items)
+                foreach (FontModel item in FontComboBox.Items)
                 {
-                    if(item.Name == fontName)
+                    if (item.Name == fontName)
                     {
                         FontComboBox.SelectedItem = item;
                         break;
@@ -359,7 +360,7 @@ namespace NiceAlerm
             ScheduleGrid.Items.Remove(remove);
             EditData.ScheduleList.Remove(remove);
             SetButtonEnabled();
-            if(ScheduleGrid.Items.Count > 0)
+            if (ScheduleGrid.Items.Count > 0)
             {
                 ScheduleGrid.SelectedIndex = 0;
             }
@@ -373,7 +374,7 @@ namespace NiceAlerm
         {
             try
             {
-                if(EditData.ScheduleList.Count == 0)
+                if (EditData.ScheduleList.Count == 0)
                 {
                     MessageBox.Show("少なくとも1件のスケジュールの登録が必要です。", "スケジュール登録エラー", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -427,6 +428,7 @@ namespace NiceAlerm
                 EditData.Enable = (bool)AlermEnableCheck.IsChecked;
                 EditData.Name = name;
                 EditData.AlermDelete = (bool)AlermDeleteCheck.IsChecked;
+                EditData.TimeAddUpDown = TimeAddUpDown.Value.Value;
                 Committed = true;
                 IsChanged = false;
                 this.Close();
@@ -436,7 +438,7 @@ namespace NiceAlerm
                 throw ex;
             }
         }
- 
+
         /// <summary>
         /// 選択変更イベント
         /// </summary>
@@ -591,7 +593,7 @@ namespace NiceAlerm
             }
             catch (Exception ex)
             {
-                throw ex; 
+                throw ex;
             }
         }
         /// <summary>
@@ -623,7 +625,7 @@ namespace NiceAlerm
                 if (IsChanged)
                 {
                     MessageBoxResult result = MessageBox.Show("データは編集中ですが、登録せずに終了しますか？", "終了確認", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes);
-                    if(result == MessageBoxResult.No)
+                    if (result == MessageBoxResult.No)
                     {
                         e.Cancel = true;
                     }
@@ -738,9 +740,15 @@ namespace NiceAlerm
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ResetDateButton_Click(object sender, RoutedEventArgs e)
+        private void DalendarButton_Click(object sender, RoutedEventArgs e)
         {
-            OnetimeDateTextBox.Text = DateTime.Now.ToString("yyyy/MM/dd");
+            CalendarWindow form = new CalendarWindow();
+            form.ShowDialog();
+            if (form.IsSelected)
+            {
+                OnetimeDateTextBox.Text = form.GetDate().ToString("yyyy/MM/dd");
+            }
+
         }
     }
 }

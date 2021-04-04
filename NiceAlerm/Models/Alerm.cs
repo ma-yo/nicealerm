@@ -30,6 +30,11 @@ namespace NiceAlerm.Models
         /// </summary>
         public bool AlermDelete { get; set; } = true;
         /// <summary>
+        /// 分加算
+        /// </summary>
+        public int TimeAddUpDown { get; internal set; }
+
+        /// <summary>
         /// 枠色
         /// </summary>
         public byte[] EdgeColor { get; set; } = new byte[] { Colors.Yellow.A, Colors.Yellow.R, Colors.Yellow.G, Colors.Yellow.B };
@@ -88,6 +93,7 @@ namespace NiceAlerm.Models
                 ExecType = editData.ExecType;
                 ExecTypeIndex = editData.ExecTypeIndex;
                 FontName = editData.FontName;
+                TimeAddUpDown = editData.TimeAddUpDown;
                 ScheduleList.Clear();
                 foreach (var s in editData.ScheduleList)
                 {
