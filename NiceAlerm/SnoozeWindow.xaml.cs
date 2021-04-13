@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace NiceAlerm
 {
     /// <summary>
-    /// ReScheduleWindow.xaml の相互作用ロジック
+    /// SnoozeWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class ReScheduleWindow : Window
+    public partial class SnoozeWindow : Window
     {
-        public ReScheduleWindow()
+        public SnoozeWindow()
         {
             InitializeComponent();
         }

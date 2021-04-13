@@ -118,13 +118,18 @@ namespace NiceAlerm
                             bool alermChanged = false;
                             DateTime currentDateTime = DateTime.Now;
                             List<Alerm> removeList = new List<Alerm>();
-                            foreach (var a in alermList.Where(a => a.Enable))
+
+                            for (int i = 0; i < alermList.Count; ++i)
                             {
+                                var a = alermList[i];
+                                if (!a.Enable) continue;
                                 List<Schedule> removeScheduleList = new List<Schedule>();
 
-                                bool alermStarted = false;
-                                foreach (var s in a.ScheduleList.Where(b => b.Enable))
+                                for (int j = 0; j < a.ScheduleList.Count; ++j)
                                 {
+                                    bool alermStarted = false;
+                                    var s = a.ScheduleList[j];
+                                    if (!s.Enable) continue;
                                     switch (s.ScheduleTypeIndex)
                                     {
                                         case 0: //指定日
@@ -191,6 +196,7 @@ namespace NiceAlerm
                                                         form.MessageText.Text = a.Message;
                                                         form.MessageText.FontFamily = new FontFamily(a.FontName);
                                                         form.Title = s.StartTime + " ⇒ " + a.Name;
+                                                        form.SetAlerm(a, alermList);
                                                         form.Show();
                                                         break;
                                                     case 1:
@@ -247,6 +253,7 @@ namespace NiceAlerm
                             {
                                 SaveAlerm();
                             }
+
                             if (alermList.Count == 0)
                             {
                                 threadStart = false;

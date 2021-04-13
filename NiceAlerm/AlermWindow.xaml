@@ -8,7 +8,7 @@
         Icon="Images/clock.ico"
         Topmost="True"
         
-        Title="AlermWindow" Height="250" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="AlermWindow" Height="250" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing" LocationChanged="Window_LocationChanged">
     <Grid x:Name="MainGrid" Background="Yellow">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -17,7 +17,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Border x:Name="MainBorder" Grid.Row="0" Grid.Column="0" Margin="20,20,20,20" Background="Black">
-            <TextBlock  x:Name="MessageText" Foreground="Tomato" TextAlignment="Center" Text="" FontFamily="Meiryo UI" TextWrapping="Wrap" Margin="30,30,30,30" HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="50"/>
+            <TextBlock  x:Name="MessageText" Foreground="Tomato" TextAlignment="Center" Text="" FontFamily="Meiryo UI"
+                        TextWrapping="Wrap" Margin="30,30,30,30" HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="50"/>
         </Border>
     </Grid>
 </Window>
