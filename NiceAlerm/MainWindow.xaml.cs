@@ -55,6 +55,7 @@ namespace NiceAlerm
         /// </summary>
         private volatile bool threadPause = false;
 
+        List<Alerm> snoozeList = new List<Alerm>();
         /// <summary>
         /// Constructor
         /// </summary>
@@ -105,7 +106,6 @@ namespace NiceAlerm
                 AlermStopMenu.IsEnabled = true;
                 threadStart = true;
                 TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock;
-
                 alermThread = Task.Run(() => {
                     try
                     {
@@ -115,6 +115,7 @@ namespace NiceAlerm
                             {
                                 Thread.Sleep(100);
                             }
+                            
                             bool alermChanged = false;
                             DateTime currentDateTime = DateTime.Now;
                             List<Alerm> removeList = new List<Alerm>();
@@ -196,7 +197,7 @@ namespace NiceAlerm
                                                         form.MessageText.Text = a.Message;
                                                         form.MessageText.FontFamily = new FontFamily(a.FontName);
                                                         form.Title = s.StartTime + " ⇒ " + a.Name;
-                                                        form.SetAlerm(a, alermList);
+                                                        form.SetAlerm(a, snoozeList);
                                                         form.Show();
                                                         break;
                                                     case 1:
@@ -248,7 +249,15 @@ namespace NiceAlerm
                                 alermList.Remove(r);
                                 alermChanged = true;
                             }
-
+                            //スヌーズが有った場合スケジュールい追加する
+                            if(snoozeList.Count > 0)
+                            {
+                                for(int i = 0; i < snoozeList.Count; ++i)
+                                {
+                                    alermList.Add(snoozeList[i]);
+                                }
+                                snoozeList.Clear();
+                            }
                             if (alermChanged)
                             {
                                 SaveAlerm();

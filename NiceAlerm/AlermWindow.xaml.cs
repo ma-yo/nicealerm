@@ -20,8 +20,8 @@ namespace NiceAlerm
     /// </summary>
     public partial class AlermWindow : Window
     {
-        private Alerm original;
-        List<Alerm> originalList;
+        private Alerm alerm;
+        List<Alerm> snoozeList;
         private SnoozeWindow snoozeWindow;
 
 
@@ -32,8 +32,10 @@ namespace NiceAlerm
 
         internal void SetAlerm(Alerm a, List<Alerm> list)
         {
-            original = a;
-            originalList = list;
+            alerm = a.DeepCopy();
+            alerm.AlermDelete = true;
+            alerm.ScheduleList.Clear();
+            snoozeList = list;
         }
 
         private void CommitButton_Click(object sender, RoutedEventArgs e)
@@ -46,6 +48,7 @@ namespace NiceAlerm
                 MessageBox.Show("指定した時刻では設定出来ません。", "スヌーズ設定エラー", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
+
             DateTime nextSchedule = DateTime.Now.AddHours(hour).AddMinutes(minute);
             Schedule schedule = new Schedule();
             schedule.StartTime = nextSchedule.ToString("HH:mm");
@@ -55,15 +58,8 @@ namespace NiceAlerm
             schedule.ScheduleType = "1回のみ";
             schedule.ScheduleTypeIndex = 0;
             schedule.ScheduleValue = nextSchedule.ToString("yyyy/MM/dd");
-
-            foreach(var a in originalList)
-            {
-                if (a.Equals(original))
-                {
-                    a.ScheduleList.Add(schedule);
-                    break;
-                }
-            }
+            alerm.ScheduleList.Add(schedule);
+            snoozeList.Add(alerm);
             this.Close();
         }
 
