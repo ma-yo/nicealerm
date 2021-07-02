@@ -104,6 +104,7 @@
     <Compile Include="SnoozeWindow.xaml.cs">
       <DependentUpon>SnoozeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\TextBoxAttachment.cs" />
     <Page Include="AlermSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

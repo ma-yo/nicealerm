@@ -71,7 +71,6 @@ namespace NiceAlerm
                 AlermEnableCheck.IsChecked = EditData.Enable;
                 TorokuNameTextBox.Text = EditData.Name;
                 AlermDeleteCheck.IsChecked = EditData.AlermDelete;
-                TimeAddUpDown.Value = EditData.TimeAddUpDown;
                 switch (EditData.ExecTypeIndex)
                 {
                     case 0:
@@ -194,7 +193,7 @@ namespace NiceAlerm
                 Week1CheckBox.IsChecked = true;
                 Week1CheckBox.IsChecked = false;
                 TimeTextBox.Text = "08:00";
-                TimeAddUpDown.Value = 0;
+                TimeAddUpDown.Value = EditData.TimeAddUpDown;
             }
             catch (Exception ex)
             {
@@ -740,7 +739,7 @@ namespace NiceAlerm
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DalendarButton_Click(object sender, RoutedEventArgs e)
+        private void CalendarButton_Click(object sender, RoutedEventArgs e)
         {
             CalendarWindow form = new CalendarWindow();
             form.ShowDialog();

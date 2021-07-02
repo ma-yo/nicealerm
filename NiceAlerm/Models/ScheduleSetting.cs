@@ -15,7 +15,7 @@ namespace NiceAlerm.Models
         public byte[] EdgeColor { get; set; }
         public bool AlermDelete { get; set; }
         public string FontName { get; set; }
-        public int TimeAddUpDown { get; internal set; }
+        public int TimeAddUpDown { get; set; }
 
         public ScheduleSetting()
         {
