@@ -166,7 +166,23 @@
         <Label Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="2" 
                x:Name="TimeTitleLabel" Content="時刻設定:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <xctk:MaskedTextBox Grid.Row="11" Grid.Column="3" Grid.ColumnSpan="2"
-                            x:Name="TimeTextBox" Mask="00:00" core:TextBoxAttachment.IsSelectAllOnGotFocus="True" InputMethod.IsInputMethodEnabled="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,2,2"/>
+                            x:Name="TimeTextBox" Mask="00:00" core:TextBoxAttachment.IsSelectAllOnGotFocus="True" InputMethod.IsInputMethodEnabled="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" TextAlignment="Center" VerticalContentAlignment="Center" Margin="4,2,0,2"/>
+
+        <Grid Grid.Row="11" Grid.Column="5" Grid.ColumnSpan="1" Width="37" Height="22" VerticalAlignment="Center" HorizontalAlignment="Left" >
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="HourUpButton" Grid.Row="0" Grid.Column="0" Content="▲" FontSize="8" Click="HourUpButton_Click" />
+            <Button x:Name="HourDownButton" Grid.Row="1" Grid.Column="0" Content="▼" FontSize="8" Click="HourDownButton_Click" />
+
+            <Button x:Name="MinuteUpButton" Grid.Row="0" Grid.Column="1" Content="▲" FontSize="8" Click="MinuteUpButton_Click" />
+            <Button x:Name="MinuteDownButton" Grid.Row="1" Grid.Column="1" Content="▼" FontSize="8" Click="MinuteDownButton_Click" />
+        </Grid>
         <Label Grid.Row="11" Grid.Column="9" Grid.ColumnSpan="2" 
                x:Name="ScheduleEnableTitleLabel" Content="状態:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <CheckBox Grid.Row="11" Grid.Column="10" Grid.ColumnSpan="2" 
@@ -178,9 +194,9 @@
         <Button Grid.Row="11" Grid.Column="15" Grid.ColumnSpan="1"
                 x:Name="RemoveButton" Background="Firebrick" Foreground="White" FontWeight="Bold" FontSize="14" Content="削除" Margin="2,2,2,2" Click="RemoveButton_Click"/>
 
-        <Label Grid.Row="11" Grid.Column="5" Grid.ColumnSpan="2" 
+        <Label Grid.Row="11" Grid.Column="6" Grid.ColumnSpan="2" 
                x:Name="TimeAddTitleLabel" Content="前倒し分数:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <xctk:IntegerUpDown Grid.Row="11" Grid.Column="7" Grid.ColumnSpan="1" 
+        <xctk:IntegerUpDown Grid.Row="11" Grid.Column="8" Grid.ColumnSpan="1" 
                             x:Name="TimeAddUpDown" FontSize="16" Minimum="-60" Maximum="0" Value="0" Margin="4,2,2,0" Height="22" VerticalAlignment="Top"/>
 
 

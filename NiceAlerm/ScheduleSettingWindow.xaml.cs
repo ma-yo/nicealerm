@@ -749,5 +749,85 @@ namespace NiceAlerm
             }
 
         }
+        /// <summary>
+        /// 時刻アップボタン
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HourUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeTime(0);
+        }
+        /// <summary>
+        /// 時刻ダウンボタン
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HourDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeTime(1);
+        }
+        /// <summary>
+        /// 分アップボタン
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MinuteUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeTime(2);
+        }
+        /// <summary>
+        /// 分ダウンボタン
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MinuteDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeTime(3);
+        }
+
+        private void ChangeTime(int mode)
+        {
+            string time = TimeTextBox.Text;
+            if (!time.Contains(":")) return;
+            string hour = time.Split(':')[0];
+            string minute = time.Split(':')[1];
+            if (!int.TryParse(hour, out int intHour)) return;
+            if (!int.TryParse(minute, out int intMinute)) return;
+            bool hourInclFlag = false;
+            switch (mode)
+            {
+                case 0:
+                    intHour++;
+                    if (intHour > 23) intHour = 0;
+                    TimeTextBox.Text = string.Format("{0:00}", intHour) + ":" + string.Format("{0:00}", intMinute); 
+                    break;
+                case 1:
+                    intHour--;
+                    if (intHour < 0) intHour = 23;
+                    TimeTextBox.Text = string.Format("{0:00}", intHour) + ":" + string.Format("{0:00}", intMinute); 
+                    break;
+                case 2:
+                    intMinute += 15;
+                    if (intMinute > 59)
+                    {
+                        intMinute = intMinute - 60;
+                        hourInclFlag = true;
+                    }
+                    TimeTextBox.Text = string.Format("{0:00}", intHour) + ":" + string.Format("{0:00}", intMinute);
+                    if (hourInclFlag) ChangeTime(0);
+                    break;
+                case 3:
+                    intMinute -= 15;
+                    if (intMinute < 0)
+                    {
+                        intHour = 60 + intMinute;
+                        hourInclFlag = true;
+                    }
+                    TimeTextBox.Text = string.Format("{0:00}", intHour) + ":" + string.Format("{0:00}", intMinute);
+                    if (hourInclFlag) ChangeTime(1);
+                    break;
+            }
+        }
     }
 }
