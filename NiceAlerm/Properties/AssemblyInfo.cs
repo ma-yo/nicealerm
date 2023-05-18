@@ -52,5 +52,5 @@ using System.Windows;
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.4.0.0")]
-[assembly: AssemblyFileVersion("1.4.0.0")]
+[assembly: AssemblyFileVersion("1.5.0.0")]
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = @"log4net.config.xml", Watch = true)]
