@@ -33,7 +33,10 @@ namespace NiceAlerm.Models
         /// 分加算
         /// </summary>
         public int TimeAddUpDown { get; internal set; }
-
+        /// <summary>
+        /// Outlookスケジュール
+        /// </summary>
+        public bool OutlookSchedule { get; set; } = false;
         /// <summary>
         /// 枠色
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Newtonsoft.Json;
 using NiceAlerm.Models;
+using NiceAlerm.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,6 +67,8 @@ namespace NiceAlerm
                 InitializeComponent();
                 CreateAppDir();
                 LoadAlerm();
+                LoadOutlookSchedule();
+
 
                 //重複起動チェック等でアプリが開始OKでない場合は終了する
                 if (!Singleton.GetInstance().AppEnabled)
@@ -89,7 +92,81 @@ namespace NiceAlerm
             }
         }
 
+        private void LoadOutlookSchedule()
+        {
+            try
+            {
+                alermList.RemoveAll(a => a.OutlookSchedule);
+                if (System.IO.File.Exists(PathUtil.GetOutlookMailPath()))
+                {
+                    OutlookUtil outlookManager = new OutlookUtil();
+                    using (StreamReader sr = new StreamReader(PathUtil.GetOutlookMailPath()))
+                    {
+                        string json = sr.ReadToEnd();
+                        List<string> mailList = JsonConvert.DeserializeObject<List<string>>(json);
+                        foreach (var mail in mailList)
+                        {
+                            if (!string.IsNullOrEmpty(mail))
+                            {
+                                try
+                                {
+                                    var schedules = outlookManager.GetScheduleList(mail, DateTime.Today, DateTime.Today.AddDays(100));
+                                    foreach (var s in schedules)
+                                    {
+                                        if(s.Start >= DateTime.Now)
+                                        {
+                                            Alerm alerm = new Alerm();
+                                            alerm.Name = s.Title;
+                                            alerm.Message = s.Title;
+                                            alerm.ExecPath = "";
+                                            alerm.AlermDelete = false;
+                                            alerm.TimeAddUpDown = -3;
+                                            alerm.OutlookSchedule = true;
+                                            alerm.EdgeColor = new byte[] { 255, 65, 105, 255 };
+                                            alerm.ForeColor = new byte[] { 255, 65, 105, 255 };
+                                            alerm.LabelColor = new byte[] { 255, 240, 255, 255 };
+                                            alerm.ExecTypeIndex = 0;
+                                            alerm.ExecType = "アラーム";
+                                            alerm.FontName = "Yu Mincho";
+                                            alerm.Enable = true;
+                                            alerm.EnableMsg = "有効";
 
+                                            Schedule schedule = new Schedule();
+                                            schedule.ScheduleTypeIndex = 0;
+                                            schedule.ScheduleType = "1回のみ";
+                                            schedule.ScheduleDelete = true;
+                                            schedule.Enable = true;
+                                            schedule.EnableMsg = "有効";
+                                            schedule.ScheduleValue = s.Start.ToString("yyyy/MM/dd");
+                                            schedule.StartTime = s.Start.ToString("HH:mm");
+                                            schedule.LastAlerm = DateTime.Parse("2020-01-01T00:00:00");
+                                            schedule.StartAddTime = -3;
+                                            alerm.ScheduleList.Add(schedule);
+                                            alermList.Add(alerm);
+                                        }
+
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.Warn(ex.Message);
+                                    logger.Warn(ex.StackTrace);
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+ 
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                logger.Error(ex.StackTrace);
+                throw ex;
+            }
+        }
         /// <summary>
         /// アラームスレッドを開始する
         /// </summary>
@@ -109,6 +186,7 @@ namespace NiceAlerm
                 alermThread = Task.Run(() => {
                     try
                     {
+                        int loadOutlookCount = 0;
                         while (threadStart)
                         {
                             while (threadPause)
@@ -116,6 +194,8 @@ namespace NiceAlerm
                                 Thread.Sleep(100);
                             }
                             
+                            loadOutlookCount++;
+
                             bool alermChanged = false;
                             DateTime currentDateTime = DateTime.Now;
                             List<Alerm> removeList = new List<Alerm>();
@@ -273,6 +353,11 @@ namespace NiceAlerm
                                     TaskbarIcon.Icon = global::NiceAlerm.Properties.Resources.clock_stop;
                                 }));
                                 break;
+                            }
+                            if(loadOutlookCount >= 120)
+                            {
+                                LoadOutlookSchedule();
+                                loadOutlookCount = 0;
                             }
                             Thread.Sleep(500);
                         }
@@ -479,6 +564,7 @@ namespace NiceAlerm
                 form.Init(alermList);
                 form.ShowDialog();
                 SaveAlerm();
+
                 this.IsEnabled = true;
                 threadPause = false;
                 AlermSettingMenu.IsEnabled = flag[0];

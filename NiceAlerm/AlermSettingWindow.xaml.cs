@@ -286,5 +286,18 @@ namespace NiceAlerm
                 throw ex;
             }
         }
+
+        private void OutlookButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OutlookScheduleWindow form = new OutlookScheduleWindow();
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

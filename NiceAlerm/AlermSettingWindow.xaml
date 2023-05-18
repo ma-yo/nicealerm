@@ -29,6 +29,7 @@
         <Button Grid.Row="0" Grid.Column="0" x:Name="AddButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="14" Content="新規作成" Margin="0,2,2,2" Click="AddButton_Click"/>
         <Button Grid.Row="0" Grid.Column="1" x:Name="EditButton" Background="LimeGreen" Foreground="White" FontWeight="Bold" FontSize="14" Content="修正" Margin="0,2,2,2" Click="EditButton_Click"/>
         <Button Grid.Row="0" Grid.Column="2" x:Name="RemoveButton" Background="Firebrick" Foreground="White" FontWeight="Bold" FontSize="14" Content="削除" Margin="0,2,2,2" Click="RemoveButton_Click"/>
+        <Button Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" x:Name="OutlookButton" Background="Royalblue" Foreground="White" FontWeight="Bold" FontSize="14" Content="Outlook予定表設定" Margin="0,2,2,2" Click="OutlookButton_Click"/>
 
         <DataGrid x:Name="AlermGrid" SelectionMode="Single" HeadersVisibility="Column" CanUserReorderColumns="False" HorizontalGridLinesBrush="Gray" VerticalGridLinesBrush="Gray" FontSize="14" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Margin="0,2,2,2" MouseDoubleClick="AlermGrid_MouseDoubleClick">
             <DataGrid.Resources>

@@ -1,0 +1,63 @@
+﻿<Window x:Class="NiceAlerm.OutlookScheduleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:NiceAlerm"
+        xmlns:core="clr-namespace:NiceAlerm.Utils"
+        mc:Ignorable="d"
+        Icon="Images/clock.ico"
+        FontFamily="MeryoUI"
+        Background="WhiteSmoke"
+        FontSize="12"
+        Title="Outlook予定表取込み設定" Height="144" Width="860" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
+               x:Name="MailAddressLabel1" Content="メールアドレス1:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <xctk:WatermarkTextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="12" 
+                               x:Name="MailAddressTextBox1" Text="" MaxLength="256" core:TextBoxAttachment.IsSelectAllOnGotFocus="True" Watermark="予定表を取り込むメールアドレスを指定して下さい。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
+
+
+        <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
+               x:Name="MailAddressLabel2" Content="メールアドレス2:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <xctk:WatermarkTextBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="12" 
+                               x:Name="MailAddressTextBox2" Text="" MaxLength="256" core:TextBoxAttachment.IsSelectAllOnGotFocus="True" Watermark="予定表を取り込むメールアドレスを指定して下さい。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
+
+        <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+               x:Name="MailAddressLabel3" Content="メールアドレス3:" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <xctk:WatermarkTextBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="12" 
+                               x:Name="MailAddressTextBox3" Text="" MaxLength="256" core:TextBoxAttachment.IsSelectAllOnGotFocus="True" Watermark="予定表を取り込むメールアドレスを指定して下さい。" FontSize="16" VerticalAlignment="Center" Margin="4,0,2,0" />
+
+        <Button Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="1"
+                x:Name="AddButton" Background="DeepSkyBlue" Foreground="White" FontWeight="Bold" FontSize="13" Content="設定" Margin="2,2,2,2" Click="AddButton_Click"/>
+
+    </Grid>
+</Window>
