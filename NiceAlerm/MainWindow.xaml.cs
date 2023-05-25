@@ -38,6 +38,9 @@ namespace NiceAlerm
         /// アラーム情報
         /// </summary>
         private List<Alerm> alermList = new List<Alerm>();
+
+
+        private List<Alerm> outlookRemoveList = new List<Alerm>();
         /// <summary>
         /// 設定ファイル
         /// </summary>
@@ -142,7 +145,21 @@ namespace NiceAlerm
                                             schedule.LastAlerm = DateTime.Parse("2020-01-01T00:00:00");
                                             schedule.StartAddTime = -3;
                                             alerm.ScheduleList.Add(schedule);
-                                            alermList.Add(alerm);
+
+                                            bool removed = false;
+                                            foreach(var remove in outlookRemoveList.Where(a => a.Name == s.Title))
+                                            {
+                                                if (remove.ScheduleList.Exists(a => a.ScheduleValue == schedule.ScheduleValue && a.StartTime == schedule.StartTime))
+                                                {
+                                                    removed = true;
+                                                    break;
+
+                                                }  
+                                            }
+                                            if (!removed)
+                                            {
+                                                alermList.Add(alerm);
+                                            }
                                         }
 
                                     }
@@ -158,7 +175,11 @@ namespace NiceAlerm
                         }
                     }
                 }
- 
+                for(int i = 0; i < outlookRemoveList.Count; ++i)
+                {
+                    outlookRemoveList[i].ScheduleList.RemoveAll(a =>DateTime.Parse(a.ScheduleValue + " " + a.StartTime + ":00") < DateTime.Now);
+                }
+                outlookRemoveList.RemoveAll(a => a.ScheduleList.Count == 0);
             }
             catch (Exception ex)
             {
@@ -315,6 +336,10 @@ namespace NiceAlerm
                                 foreach (var remove in removeScheduleList)
                                 {
                                     alermChanged = true;
+                                    Alerm outlookRemove = a.DeepCopy();
+                                    outlookRemove.ScheduleList.Clear();
+                                    outlookRemove.ScheduleList.Add(remove.DeepCopy());
+                                    outlookRemoveList.Add(outlookRemove);
                                     a.ScheduleList.Remove(remove);
                                 }
                                 //スケジュールが0の場合は削除する
